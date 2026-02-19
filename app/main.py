@@ -6,16 +6,23 @@ Main FastAPI application with privacy-first middleware.
 import time
 import uuid
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from app.core.config import settings
 from app.core.cleanup import register_cleanup_handlers
 from app.middleware.privacy_logging import PrivacyLoggingMiddleware
 from app.middleware.cache_headers import CacheHeadersMiddleware
 from app.api.v1 import api_router
+
+
+# Static files directory
+STATIC_DIR = Path(__file__).parent / "static"
 
 
 @asynccontextmanager
@@ -66,3 +73,16 @@ async def health_check() -> dict:
 async def test_cache() -> dict:
     """Test endpoint to verify cache headers are applied."""
     return {"message": "Cache headers should be present in response"}
+
+
+# Mount static files for web UI (must be after API routes)
+# Serve static assets (CSS, JS)
+app.mount("/css", StaticFiles(directory=STATIC_DIR / "css"), name="css")
+app.mount("/js", StaticFiles(directory=STATIC_DIR / "js"), name="js")
+
+
+# Serve index.html for root and SPA fallback
+@app.get("/", response_class=FileResponse)
+async def serve_index():
+    """Serve the main web UI."""
+    return FileResponse(STATIC_DIR / "index.html")
