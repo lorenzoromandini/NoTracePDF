@@ -35,10 +35,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Project foundation with privacy logging and cache headers (ARCH-01, ARCH-04, ARCH-05, ARCH-08)
 - [x] 01-02-PLAN.md — Docker infrastructure with tmpfs and zero persistence (ARCH-02, ARCH-03, ARCH-06, ARCH-07, DEPLOY-01 to DEPLOY-04)
-- [ ] 01-03-PLAN.md — PDF core operations: merge, split, rotate, reorder, delete (PDF-01 to PDF-07)
-- [ ] 01-04-PLAN.md — PDF security: compress, password, watermark (PDF-08 to PDF-13)
-- [ ] 01-05-PLAN.md — PDF extraction: text, images, pages (PDF-14 to PDF-16)
-- [ ] 01-06-PLAN.md — Image conversion: PDF↔images (IMG-01 to IMG-06)
+- [x] 01-03-PLAN.md — PDF core operations: merge, split, rotate, reorder, delete (PDF-01 to PDF-07)
+- [x] 01-04-PLAN.md — PDF security: compress, password, watermark (PDF-08 to PDF-13)
+- [x] 01-05-PLAN.md — PDF extraction: text, images, pages (PDF-14 to PDF-16)
+- [x] 01-06-PLAN.md — Image conversion: PDF↔images (IMG-01 to IMG-06)
 - [ ] 01-07-PLAN.md — Web UI with all features (UI-01 to UI-08)
 - [ ] 01-08-PLAN.md — Zero-trace verification and deployment testing (All ARCH, DEPLOY)
 
@@ -85,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. MVP Foundation | 2/8 | In progress | 01-01, 01-02 |
+| 1. MVP Foundation | 6/8 | In progress | 01-01, 01-02, 01-03, 01-04, 01-05, 01-06 |
 | 2. Extended PDF Operations | 0/TBD | Not started | - |
 | 3. Document Conversions | 0/TBD | Not started | - |
 | 4. Advanced Features | 0/TBD | Not started | - |

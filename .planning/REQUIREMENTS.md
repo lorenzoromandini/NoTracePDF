@@ -18,31 +18,31 @@
 
 ### Core PDF Operations (MVP)
 
-- [ ] **PDF-01**: User can merge multiple PDFs into single document
-- [ ] **PDF-02**: User can split PDF by page range
-- [ ] **PDF-03**: User can split PDF by extracting every N pages
-- [ ] **PDF-04**: User can extract specific pages from PDF
-- [ ] **PDF-05**: User can rotate pages (single or all)
-- [ ] **PDF-06**: User can reorder pages via visual interface
-- [ ] **PDF-07**: User can delete pages from PDF
-- [ ] **PDF-08**: User can compress PDF with quality presets (low/medium/high)
-- [ ] **PDF-09**: User can add password protection with open password
-- [ ] **PDF-10**: User can set PDF permissions (print, copy, edit)
-- [ ] **PDF-11**: User can remove password protection (with valid password)
-- [ ] **PDF-12**: User can add text watermark with positioning options
-- [ ] **PDF-13**: User can add image watermark with positioning options
-- [ ] **PDF-14**: User can extract text from PDF
-- [ ] **PDF-15**: User can extract images from PDF
-- [ ] **PDF-16**: User can extract pages from PDF as separate files
+- [x] **PDF-01**: User can merge multiple PDFs into single document
+- [x] **PDF-02**: User can split PDF by page range
+- [x] **PDF-03**: User can split PDF by extracting every N pages
+- [x] **PDF-04**: User can extract specific pages from PDF
+- [x] **PDF-05**: User can rotate pages (single or all)
+- [x] **PDF-06**: User can reorder pages via visual interface
+- [x] **PDF-07**: User can delete pages from PDF
+- [x] **PDF-08**: User can compress PDF with quality presets (low/medium/high)
+- [x] **PDF-09**: User can add password protection with open password
+- [x] **PDF-10**: User can set PDF permissions (print, copy, edit)
+- [x] **PDF-11**: User can remove password protection (with valid password)
+- [x] **PDF-12**: User can add text watermark with positioning options
+- [x] **PDF-13**: User can add image watermark with positioning options
+- [x] **PDF-14**: User can extract text from PDF
+- [x] **PDF-15**: User can extract images from PDF
+- [x] **PDF-16**: User can extract pages from PDF as separate files
 
 ### Image Conversion (MVP)
 
-- [ ] **IMG-01**: User can convert PDF pages to PNG images
-- [ ] **IMG-02**: User can convert PDF pages to JPG images
-- [ ] **IMG-03**: User can convert PDF pages to WebP images
-- [ ] **IMG-04**: User can convert single PDF page or all pages
-- [ ] **IMG-05**: User can convert multiple images (PNG/JPG/WebP) into single PDF
-- [ ] **IMG-06**: User can specify page sizing when creating PDF from images
+- [x] **IMG-01**: User can convert PDF pages to PNG images
+- [x] **IMG-02**: User can convert PDF pages to JPG images
+- [x] **IMG-03**: User can convert PDF pages to WebP images
+- [x] **IMG-04**: User can convert single PDF page or all pages
+- [x] **IMG-05**: User can convert multiple images (PNG/JPG/WebP) into single PDF
+- [x] **IMG-06**: User can specify page sizing when creating PDF from images
 
 ### User Interface
 
@@ -128,28 +128,28 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ARCH-06 | Phase 1 | Complete |
 | ARCH-07 | Phase 1 | Complete |
 | ARCH-08 | Phase 1 | Complete |
-| PDF-01 | Phase 1 | Pending |
-| PDF-02 | Phase 1 | Pending |
-| PDF-03 | Phase 1 | Pending |
-| PDF-04 | Phase 1 | Pending |
-| PDF-05 | Phase 1 | Pending |
-| PDF-06 | Phase 1 | Pending |
-| PDF-07 | Phase 1 | Pending |
-| PDF-08 | Phase 1 | Pending |
-| PDF-09 | Phase 1 | Pending |
-| PDF-10 | Phase 1 | Pending |
-| PDF-11 | Phase 1 | Pending |
-| PDF-12 | Phase 1 | Pending |
-| PDF-13 | Phase 1 | Pending |
-| PDF-14 | Phase 1 | Pending |
-| PDF-15 | Phase 1 | Pending |
-| PDF-16 | Phase 1 | Pending |
-| IMG-01 | Phase 1 | Pending |
-| IMG-02 | Phase 1 | Pending |
-| IMG-03 | Phase 1 | Pending |
-| IMG-04 | Phase 1 | Pending |
-| IMG-05 | Phase 1 | Pending |
-| IMG-06 | Phase 1 | Pending |
+| PDF-01 | Phase 1 | Complete |
+| PDF-02 | Phase 1 | Complete |
+| PDF-03 | Phase 1 | Complete |
+| PDF-04 | Phase 1 | Complete |
+| PDF-05 | Phase 1 | Complete |
+| PDF-06 | Phase 1 | Complete |
+| PDF-07 | Phase 1 | Complete |
+| PDF-08 | Phase 1 | Complete |
+| PDF-09 | Phase 1 | Complete |
+| PDF-10 | Phase 1 | Complete |
+| PDF-11 | Phase 1 | Complete |
+| PDF-12 | Phase 1 | Complete |
+| PDF-13 | Phase 1 | Complete |
+| PDF-14 | Phase 1 | Complete |
+| PDF-15 | Phase 1 | Complete |
+| PDF-16 | Phase 1 | Complete |
+| IMG-01 | Phase 1 | Complete |
+| IMG-02 | Phase 1 | Complete |
+| IMG-03 | Phase 1 | Complete |
+| IMG-04 | Phase 1 | Complete |
+| IMG-05 | Phase 1 | Complete |
+| IMG-06 | Phase 1 | Complete |
 | UI-01 | Phase 1 | Pending |
 | UI-02 | Phase 1 | Pending |
 | UI-03 | Phase 1 | Pending |
@@ -197,4 +197,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-19*
-*Last updated: 2026-02-19 after Plans 01-01, 01-02 completion*
+*Last updated: 2026-02-19 after Wave 2 completion (Plans 01-03 to 01-06)*
