@@ -46,14 +46,14 @@
 
 ### User Interface
 
-- [ ] **UI-01**: Clean, modern, single-page web UI with tool cards in grid layout
-- [ ] **UI-02**: Drag and drop upload zone supporting multiple files
-- [ ] **UI-03**: Tool-specific options panel (page ranges, quality slider, password field, etc.)
-- [ ] **UI-04**: Real-time progress bar during processing (via SSE or WebSocket)
-- [ ] **UI-05**: Instant download with sensible default filename
-- [ ] **UI-06**: Post-download message: "All files have been permanently deleted from the server"
-- [ ] **UI-07**: No history, no "recent files", no cookies except optional UI preferences
-- [ ] **UI-08**: Responsive design supporting mobile devices
+- [x] **UI-01**: Clean, modern, single-page web UI with tool cards in grid layout
+- [x] **UI-02**: Drag and drop upload zone supporting multiple files
+- [x] **UI-03**: Tool-specific options panel (page ranges, quality slider, password field, etc.)
+- [x] **UI-04**: Real-time progress bar during processing (via SSE or WebSocket)
+- [x] **UI-05**: Instant download with sensible default filename
+- [x] **UI-06**: Post-download message: "All files have been permanently deleted from the server"
+- [x] **UI-07**: No history, no "recent files", no cookies except optional UI preferences
+- [x] **UI-08**: Responsive design supporting mobile devices
 
 ### Deployment
 
@@ -150,14 +150,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | IMG-04 | Phase 1 | Complete |
 | IMG-05 | Phase 1 | Complete |
 | IMG-06 | Phase 1 | Complete |
-| UI-01 | Phase 1 | Pending |
-| UI-02 | Phase 1 | Pending |
-| UI-03 | Phase 1 | Pending |
-| UI-04 | Phase 1 | Pending |
-| UI-05 | Phase 1 | Pending |
-| UI-06 | Phase 1 | Pending |
-| UI-07 | Phase 1 | Pending |
-| UI-08 | Phase 1 | Pending |
+| UI-01 | Phase 1 | Complete |
+| UI-02 | Phase 1 | Complete |
+| UI-03 | Phase 1 | Complete |
+| UI-04 | Phase 1 | Complete |
+| UI-05 | Phase 1 | Complete |
+| UI-06 | Phase 1 | Complete |
+| UI-07 | Phase 1 | Complete |
+| UI-08 | Phase 1 | Complete |
 | DEPLOY-01 | Phase 1 | Complete |
 | DEPLOY-02 | Phase 1 | Complete |
 | DEPLOY-03 | Phase 1 | Complete |
@@ -197,4 +197,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-19*
-*Last updated: 2026-02-19 after Wave 2 completion (Plans 01-03 to 01-06)*
+*Last updated: 2026-02-19 after Plan 01-07 completion (Web UI)*

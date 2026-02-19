@@ -15,15 +15,47 @@ from app.schemas.pdf import QualityPreset
 from app.utils.file_utils import FileValidationError
 
 
-# Permission mapping for pikepdf
-PERMISSION_MAP = {
-    "print": pikepdf.Permissions.extract_printing,
-    "copy": pikepdf.Permissions.copy_content,
-    "edit": pikepdf.Permissions.modify_form_fields,
-    "annotate": pikepdf.Permissions.modify_annotations,
-    "fill_forms": pikepdf.Permissions.fill_form_fields,
-    "extract": pikepdf.Permissions.extract_content,
+# Permission field mapping for pikepdf (v9+ API)
+# Permissions is a NamedTuple with boolean fields
+PERMISSION_FIELDS = {
+    "print": ("print_lowres", "print_highres"),
+    "copy": ("extract",),
+    "edit": ("modify_form", "modify_other"),
+    "annotate": ("modify_annotation",),
+    "fill_forms": ("modify_form",),
+    "extract": ("extract",),
 }
+
+
+def build_permissions(allowed: List[str]) -> pikepdf.Permissions:
+    """
+    Build a Permissions object from a list of allowed permission names.
+    
+    Args:
+        allowed: List of permission names to allow
+        
+    Returns:
+        Permissions object with appropriate fields set
+    """
+    # Start with all permissions disabled
+    perm_dict = {
+        'accessibility': True,  # Always allow accessibility for screen readers
+        'extract': False,
+        'modify_annotation': False,
+        'modify_assembly': False,
+        'modify_form': False,
+        'modify_other': False,
+        'print_lowres': False,
+        'print_highres': False,
+    }
+    
+    # Enable requested permissions
+    for perm_name in allowed:
+        if perm_name in PERMISSION_FIELDS:
+            for field in PERMISSION_FIELDS[perm_name]:
+                perm_dict[field] = True
+    
+    return pikepdf.Permissions(**perm_dict)
 
 
 # Quality preset configurations
@@ -99,11 +131,16 @@ def add_password(
     
     with pikepdf.Pdf.open(file) as pdf:
         # Build permissions
-        perms = pikepdf.Permissions()
-        if permissions:
-            for perm_name in permissions:
-                if perm_name in PERMISSION_MAP:
-                    perms |= PERMISSION_MAP[perm_name]
+        perms = build_permissions(permissions) if permissions else pikepdf.Permissions(
+            accessibility=True,
+            extract=False,
+            modify_annotation=False,
+            modify_assembly=False,
+            modify_form=False,
+            modify_other=False,
+            print_lowres=False,
+            print_highres=False,
+        )
         
         # Create encryption with AES-256
         encryption = pikepdf.Encryption(
@@ -180,10 +217,7 @@ def set_permissions(
     try:
         with pikepdf.Pdf.open(file, password=password) as pdf:
             # Build new permissions
-            perms = pikepdf.Permissions()
-            for perm_name in permissions:
-                if perm_name in PERMISSION_MAP:
-                    perms |= PERMISSION_MAP[perm_name]
+            perms = build_permissions(permissions)
             
             # Re-encrypt with new permissions
             encryption = pikepdf.Encryption(
