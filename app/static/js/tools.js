@@ -1,0 +1,637 @@
+/**
+ * Tool Configurations
+ * 
+ * Defines the options and parameters for each PDF/image tool.
+ */
+
+const TOOL_CONFIG = {
+    // PDF Operations
+    merge: {
+        name: 'Merge PDF',
+        endpoint: '/api/v1/pdf/merge',
+        multipleFiles: true,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: null, // No additional options for merge
+    },
+
+    split: {
+        name: 'Split PDF',
+        endpoint: '/api/v1/pdf/split',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'mode',
+                label: 'Split Mode',
+                type: 'select',
+                default: 'range',
+                options: [
+                    { value: 'range', label: 'Extract page range' },
+                    { value: 'every_n', label: 'Split every N pages' },
+                    { value: 'specific', label: 'Extract specific pages' }
+                ]
+            },
+            {
+                key: 'start',
+                label: 'Start Page',
+                type: 'number',
+                default: 1,
+                min: 1,
+                showIf: { mode: 'range' }
+            },
+            {
+                key: 'end',
+                label: 'End Page',
+                type: 'number',
+                default: 1,
+                min: 1,
+                showIf: { mode: 'range' }
+            },
+            {
+                key: 'n_pages',
+                label: 'Pages per split',
+                type: 'number',
+                default: 1,
+                min: 1,
+                showIf: { mode: 'every_n' }
+            },
+            {
+                key: 'pages',
+                label: 'Page numbers',
+                type: 'text',
+                placeholder: 'e.g., 1, 3, 5-7',
+                hint: 'Comma-separated page numbers or ranges (1-indexed)',
+                showIf: { mode: 'specific' }
+            }
+        ]
+    },
+
+    rotate: {
+        name: 'Rotate PDF',
+        endpoint: '/api/v1/pdf/rotate',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'pages',
+                label: 'Pages to rotate',
+                type: 'select',
+                default: 'all',
+                options: [
+                    { value: 'all', label: 'All pages' },
+                    { value: 'specific', label: 'Specific pages' }
+                ]
+            },
+            {
+                key: 'pageNumbers',
+                label: 'Page numbers',
+                type: 'text',
+                placeholder: 'e.g., 1, 3, 5',
+                hint: 'Comma-separated page numbers (1-indexed)',
+                showIf: { pages: 'specific' }
+            },
+            {
+                key: 'degrees',
+                label: 'Rotation angle',
+                type: 'radio',
+                default: '90',
+                options: [
+                    { value: '90', label: '90° clockwise' },
+                    { value: '180', label: '180°' },
+                    { value: '270', label: '270° clockwise' }
+                ]
+            }
+        ]
+    },
+
+    compress: {
+        name: 'Compress PDF',
+        endpoint: '/api/v1/pdf/compress',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'quality',
+                label: 'Quality preset',
+                type: 'radio',
+                default: 'medium',
+                options: [
+                    { value: 'low', label: 'Low (smallest file, 72 DPI)' },
+                    { value: 'medium', label: 'Medium (balanced, 150 DPI)' },
+                    { value: 'high', label: 'High (best quality, 300 DPI)' }
+                ]
+            }
+        ]
+    },
+
+    'password-add': {
+        name: 'Password Protect',
+        endpoint: '/api/v1/pdf/password/add',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'password',
+                label: 'Password',
+                type: 'password',
+                required: true,
+                placeholder: 'Enter a strong password'
+            },
+            {
+                key: 'permissions',
+                label: 'Allowed permissions',
+                type: 'checkbox',
+                options: [
+                    { value: 'print', label: 'Print' },
+                    { value: 'copy', label: 'Copy content' },
+                    { value: 'edit', label: 'Edit' },
+                    { value: 'annotate', label: 'Add annotations' },
+                    { value: 'fill_forms', label: 'Fill forms' },
+                    { value: 'extract', label: 'Extract content' }
+                ]
+            }
+        ]
+    },
+
+    'password-remove': {
+        name: 'Remove Password',
+        endpoint: '/api/v1/pdf/password/remove',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'password',
+                label: 'Current Password',
+                type: 'password',
+                required: true,
+                placeholder: 'Enter the current password'
+            }
+        ]
+    },
+
+    watermark: {
+        name: 'Add Watermark',
+        endpoint: '/api/v1/pdf/watermark/text',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'watermarkType',
+                label: 'Watermark type',
+                type: 'radio',
+                default: 'text',
+                options: [
+                    { value: 'text', label: 'Text watermark' },
+                    { value: 'image', label: 'Image watermark' }
+                ]
+            },
+            {
+                key: 'text',
+                label: 'Watermark text',
+                type: 'text',
+                required: true,
+                placeholder: 'e.g., CONFIDENTIAL',
+                showIf: { watermarkType: 'text' }
+            },
+            {
+                key: 'fontSize',
+                label: 'Font size',
+                type: 'number',
+                default: 48,
+                min: 12,
+                max: 200,
+                showIf: { watermarkType: 'text' }
+            },
+            {
+                key: 'color',
+                label: 'Color',
+                type: 'color',
+                default: '#808080',
+                showIf: { watermarkType: 'text' }
+            },
+            {
+                key: 'imageFile',
+                label: 'Watermark image',
+                type: 'file',
+                accepts: ['.png', '.jpg', '.jpeg', '.webp'],
+                acceptMime: 'image/png,image/jpeg,image/webp',
+                showIf: { watermarkType: 'image' }
+            },
+            {
+                key: 'scale',
+                label: 'Image scale',
+                type: 'range',
+                default: 0.5,
+                min: 0.1,
+                max: 1.0,
+                step: 0.1,
+                showIf: { watermarkType: 'image' }
+            },
+            {
+                key: 'opacity',
+                label: 'Opacity',
+                type: 'range',
+                default: 0.3,
+                min: 0.1,
+                max: 1.0,
+                step: 0.1
+            },
+            {
+                key: 'position',
+                label: 'Position',
+                type: 'select',
+                default: 'diagonal',
+                options: [
+                    { value: 'center', label: 'Center' },
+                    { value: 'diagonal', label: 'Diagonal' },
+                    { value: 'top-left', label: 'Top Left' },
+                    { value: 'top-right', label: 'Top Right' },
+                    { value: 'bottom-left', label: 'Bottom Left' },
+                    { value: 'bottom-right', label: 'Bottom Right' }
+                ]
+            },
+            {
+                key: 'pages',
+                label: 'Apply to',
+                type: 'select',
+                default: 'all',
+                options: [
+                    { value: 'all', label: 'All pages' },
+                    { value: 'first', label: 'First page only' },
+                    { value: 'last', label: 'Last page only' }
+                ]
+            }
+        ]
+    },
+
+    'extract-text': {
+        name: 'Extract Text',
+        endpoint: '/api/v1/pdf/extract/text',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'pages',
+                label: 'Pages to extract (optional)',
+                type: 'text',
+                placeholder: 'e.g., 1, 3, 5-7',
+                hint: 'Leave empty for all pages'
+            }
+        ],
+        returnsText: true
+    },
+
+    'extract-images': {
+        name: 'Extract Images',
+        endpoint: '/api/v1/pdf/extract/images',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'format',
+                label: 'Output format',
+                type: 'select',
+                default: 'original',
+                options: [
+                    { value: 'original', label: 'Original format' },
+                    { value: 'png', label: 'PNG' },
+                    { value: 'jpg', label: 'JPG' },
+                    { value: 'webp', label: 'WebP' }
+                ]
+            },
+            {
+                key: 'pages',
+                label: 'Pages to extract from (optional)',
+                type: 'text',
+                placeholder: 'e.g., 1, 3, 5',
+                hint: 'Leave empty for all pages'
+            }
+        ]
+    },
+
+    'extract-pages': {
+        name: 'Extract Pages',
+        endpoint: '/api/v1/pdf/extract/pages',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'pages',
+                label: 'Pages to extract',
+                type: 'text',
+                required: true,
+                placeholder: 'e.g., 1, 3, 5-7',
+                hint: 'Comma-separated page numbers or ranges (1-indexed)'
+            }
+        ]
+    },
+
+    'pdf-to-images': {
+        name: 'PDF to Images',
+        endpoint: '/api/v1/image/pdf-to-images',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'format',
+                label: 'Output format',
+                type: 'radio',
+                default: 'png',
+                options: [
+                    { value: 'png', label: 'PNG (lossless)' },
+                    { value: 'jpg', label: 'JPG (smaller)' },
+                    { value: 'webp', label: 'WebP (modern)' }
+                ]
+            },
+            {
+                key: 'pages',
+                label: 'Pages to convert',
+                type: 'select',
+                default: 'all',
+                options: [
+                    { value: 'all', label: 'All pages' },
+                    { value: 'first', label: 'First page only' }
+                ]
+            },
+            {
+                key: 'dpi',
+                label: 'Resolution (DPI)',
+                type: 'select',
+                default: '200',
+                options: [
+                    { value: '72', label: '72 DPI (low)' },
+                    { value: '150', label: '150 DPI (medium)' },
+                    { value: '200', label: '200 DPI (default)' },
+                    { value: '300', label: '300 DPI (high)' }
+                ]
+            },
+            {
+                key: 'quality',
+                label: 'Quality (JPG/WebP only)',
+                type: 'range',
+                default: 85,
+                min: 1,
+                max: 100,
+                step: 5
+            }
+        ]
+    },
+
+    'images-to-pdf': {
+        name: 'Images to PDF',
+        endpoint: '/api/v1/image/images-to-pdf',
+        multipleFiles: true,
+        accepts: ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp'],
+        acceptMime: 'image/png,image/jpeg,image/webp,image/gif,image/bmp',
+        options: [
+            {
+                key: 'page_size',
+                label: 'Page size',
+                type: 'select',
+                default: 'a4',
+                options: [
+                    { value: 'a4', label: 'A4 (210×297mm)' },
+                    { value: 'letter', label: 'US Letter (8.5×11in)' },
+                    { value: 'fit', label: 'Fit to image' },
+                    { value: 'original', label: 'Original image size' }
+                ]
+            },
+            {
+                key: 'fit_to_page',
+                label: 'Scale images to fit page',
+                type: 'checkbox',
+                options: [
+                    { value: 'fit', label: 'Scale to fit page' }
+                ]
+            }
+        ]
+    }
+};
+
+
+/**
+ * Generate HTML for tool options
+ */
+function generateOptionsHTML(toolId) {
+    const config = TOOL_CONFIG[toolId];
+    if (!config || !config.options) {
+        return '';
+    }
+
+    let html = '';
+    
+    for (const option of config.options) {
+        const showIfAttr = option.showIf 
+            ? `data-showif="${option.showIf.key}=${option.showIf.value}" data-showif-value="${option.showIf.value}"`
+            : '';
+        const hiddenClass = option.showIf ? 'hidden' : '';
+
+        html += `<div class="option-group ${hiddenClass}" data-option="${option.key}" ${showIfAttr}>`;
+        
+        // Label
+        html += `<label class="option-label">${option.label}`;
+        if (option.hint) {
+            html += ` <span class="option-hint">(${option.hint})</span>`;
+        }
+        html += `</label>`;
+
+        // Input based on type
+        switch (option.type) {
+            case 'text':
+            case 'password':
+                html += `<input type="${option.type}" 
+                    class="option-input" 
+                    name="${option.key}" 
+                    placeholder="${option.placeholder || ''}"
+                    ${option.required ? 'required' : ''}>`;
+                break;
+
+            case 'number':
+                html += `<input type="number" 
+                    class="option-input" 
+                    name="${option.key}" 
+                    value="${option.default}"
+                    min="${option.min || ''}"
+                    max="${option.max || ''}">`;
+                break;
+
+            case 'color':
+                html += `<input type="color" 
+                    class="option-input" 
+                    name="${option.key}" 
+                    value="${option.default}">`;
+                break;
+
+            case 'select':
+                html += `<select class="option-select" name="${option.key}">`;
+                for (const opt of option.options) {
+                    html += `<option value="${opt.value}" ${opt.value === option.default ? 'selected' : ''}>${opt.label}</option>`;
+                }
+                html += `</select>`;
+                break;
+
+            case 'radio':
+                html += `<div class="option-group-inline">`;
+                for (const opt of option.options) {
+                    html += `<label class="option-radio">
+                        <input type="radio" name="${option.key}" value="${opt.value}" 
+                            ${opt.value === option.default ? 'checked' : ''}>
+                        ${opt.label}
+                    </label>`;
+                }
+                html += `</div>`;
+                break;
+
+            case 'checkbox':
+                html += `<div class="option-group-inline">`;
+                for (const opt of option.options) {
+                    html += `<label class="option-checkbox">
+                        <input type="checkbox" name="${option.key}" value="${opt.value}">
+                        ${opt.label}
+                    </label>`;
+                }
+                html += `</div>`;
+                break;
+
+            case 'range':
+                html += `<div class="range-container">
+                    <input type="range" class="range-input" name="${option.key}"
+                        value="${option.default}" min="${option.min}" max="${option.max}" step="${option.step || 1}"
+                        oninput="this.nextElementSibling.textContent = this.value">
+                    <span class="range-value">${option.default}</span>
+                </div>`;
+                break;
+
+            case 'file':
+                html += `<input type="file" class="option-input" name="${option.key}"
+                    accept="${option.acceptMime || ''}">`;
+                break;
+        }
+
+        html += `</div>`;
+    }
+
+    return html;
+}
+
+
+/**
+ * Parse page input string to array
+ * Examples: "1, 3, 5-7" -> [1, 3, 5, 6, 7]
+ */
+function parsePageInput(input) {
+    if (!input || !input.trim()) return null;
+    
+    const pages = new Set();
+    const parts = input.split(',').map(s => s.trim());
+    
+    for (const part of parts) {
+        if (part.includes('-')) {
+            const [start, end] = part.split('-').map(n => parseInt(n.trim(), 10));
+            if (!isNaN(start) && !isNaN(end)) {
+                for (let i = start; i <= end; i++) {
+                    pages.add(i);
+                }
+            }
+        } else {
+            const num = parseInt(part, 10);
+            if (!isNaN(num)) {
+                pages.add(num);
+            }
+        }
+    }
+    
+    return Array.from(pages).sort((a, b) => a - b);
+}
+
+
+/**
+ * Collect form data for API submission
+ */
+function collectFormData(toolId, files, optionsForm) {
+    const config = TOOL_CONFIG[toolId];
+    const formData = new FormData();
+    
+    // Add files
+    if (config.multipleFiles) {
+        for (const file of files) {
+            formData.append('files', file);
+        }
+    } else {
+        formData.append('file', files[0]);
+    }
+    
+    // Collect options
+    if (optionsForm && config.options) {
+        for (const option of config.options) {
+            const input = optionsForm.querySelector(`[name="${option.key}"]`);
+            if (!input) continue;
+
+            // Skip if this option is hidden due to showIf
+            const group = input.closest('.option-group');
+            if (group && group.classList.contains('hidden')) {
+                continue;
+            }
+            
+            switch (option.type) {
+                case 'checkbox':
+                    const checkboxes = optionsForm.querySelectorAll(`[name="${option.key}"]:checked`);
+                    if (checkboxes.length > 0) {
+                        const values = Array.from(checkboxes).map(cb => cb.value);
+                        formData.append(option.key, JSON.stringify(values));
+                    }
+                    break;
+                    
+                case 'radio':
+                    const radio = optionsForm.querySelector(`[name="${option.key}"]:checked`);
+                    if (radio) {
+                        formData.append(option.key, radio.value);
+                    }
+                    break;
+
+                case 'text':
+                    // Special handling for page inputs
+                    if (option.key === 'pages' || option.key === 'pageNumbers') {
+                        const parsed = parsePageInput(input.value);
+                        if (parsed) {
+                            formData.append(option.key, JSON.stringify(parsed));
+                        }
+                    } else {
+                        formData.append(option.key, input.value);
+                    }
+                    break;
+
+                case 'file':
+                    if (input.files && input.files[0]) {
+                        formData.append(option.key === 'imageFile' ? 'image' : option.key, input.files[0]);
+                    }
+                    break;
+                    
+                default:
+                    if (input.value) {
+                        formData.append(option.key, input.value);
+                    }
+            }
+        }
+    }
+    
+    return formData;
+}
+
+
+// Export for use in other modules
+window.TOOL_CONFIG = TOOL_CONFIG;
+window.generateOptionsHTML = generateOptionsHTML;
+window.collectFormData = collectFormData;
+window.parsePageInput = parsePageInput;
