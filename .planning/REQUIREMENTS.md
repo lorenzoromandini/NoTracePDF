@@ -7,14 +7,14 @@
 
 ### Architecture & Security
 
-- [ ] **ARCH-01**: All file processing uses in-memory streams (BytesIO) — no disk writes for user data
-- [ ] **ARCH-02**: Docker container has zero persistent volumes for user data
-- [ ] **ARCH-03**: Temporary files (if required) use tmpfs-mounted /tmp — RAM-backed, ephemeral
-- [ ] **ARCH-04**: Server logs contain no filenames, IP addresses, file sizes, or timestamps of user activity
-- [ ] **ARCH-05**: All download responses include `Cache-Control: no-store, no-cache, must-revalidate, private` headers
-- [ ] **ARCH-06**: Container memory limits prevent memory exhaustion from malicious PDFs
-- [ ] **ARCH-07**: Request timeouts prevent DoS via slow uploads
-- [ ] **ARCH-08**: Cleanup handlers run on all exit paths (success, error, SIGTERM)
+- [x] **ARCH-01**: All file processing uses in-memory streams (BytesIO) — no disk writes for user data
+- [x] **ARCH-02**: Docker container has zero persistent volumes for user data
+- [x] **ARCH-03**: Temporary files (if required) use tmpfs-mounted /tmp — RAM-backed, ephemeral
+- [x] **ARCH-04**: Server logs contain no filenames, IP addresses, file sizes, or timestamps of user activity
+- [x] **ARCH-05**: All download responses include `Cache-Control: no-store, no-cache, must-revalidate, private` headers
+- [x] **ARCH-06**: Container memory limits prevent memory exhaustion from malicious PDFs
+- [x] **ARCH-07**: Request timeouts prevent DoS via slow uploads
+- [x] **ARCH-08**: Cleanup handlers run on all exit paths (success, error, SIGTERM)
 
 ### Core PDF Operations (MVP)
 
@@ -57,10 +57,10 @@
 
 ### Deployment
 
-- [ ] **DEPLOY-01**: Self-hosted Docker deployment
-- [ ] **DEPLOY-02**: Single container deployment (no external dependencies)
-- [ ] **DEPLOY-03**: MIT or AGPLv3 license
-- [ ] **DEPLOY-04**: Runs on NAS/VPS/home lab hardware
+- [x] **DEPLOY-01**: Self-hosted Docker deployment
+- [x] **DEPLOY-02**: Single container deployment (no external dependencies)
+- [x] **DEPLOY-03**: MIT or AGPLv3 license
+- [x] **DEPLOY-04**: Runs on NAS/VPS/home lab hardware
 
 ## Tier 1 Requirements (Post-MVP)
 
@@ -120,14 +120,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ARCH-01 | Phase 1 | Pending |
-| ARCH-02 | Phase 1 | Pending |
-| ARCH-03 | Phase 1 | Pending |
-| ARCH-04 | Phase 1 | Pending |
-| ARCH-05 | Phase 1 | Pending |
-| ARCH-06 | Phase 1 | Pending |
-| ARCH-07 | Phase 1 | Pending |
-| ARCH-08 | Phase 1 | Pending |
+| ARCH-01 | Phase 1 | Complete |
+| ARCH-02 | Phase 1 | Complete |
+| ARCH-03 | Phase 1 | Complete |
+| ARCH-04 | Phase 1 | Complete |
+| ARCH-05 | Phase 1 | Complete |
+| ARCH-06 | Phase 1 | Complete |
+| ARCH-07 | Phase 1 | Complete |
+| ARCH-08 | Phase 1 | Complete |
 | PDF-01 | Phase 1 | Pending |
 | PDF-02 | Phase 1 | Pending |
 | PDF-03 | Phase 1 | Pending |
@@ -158,10 +158,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UI-06 | Phase 1 | Pending |
 | UI-07 | Phase 1 | Pending |
 | UI-08 | Phase 1 | Pending |
-| DEPLOY-01 | Phase 1 | Pending |
-| DEPLOY-02 | Phase 1 | Pending |
-| DEPLOY-03 | Phase 1 | Pending |
-| DEPLOY-04 | Phase 1 | Pending |
+| DEPLOY-01 | Phase 1 | Complete |
+| DEPLOY-02 | Phase 1 | Complete |
+| DEPLOY-03 | Phase 1 | Complete |
+| DEPLOY-04 | Phase 1 | Complete |
 | PDF-17 | Phase 2 | Pending |
 | PDF-18 | Phase 2 | Pending |
 | PDF-19 | Phase 2 | Pending |
@@ -197,4 +197,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-19*
-*Last updated: 2026-02-19 after initialization*
+*Last updated: 2026-02-19 after Plans 01-01, 01-02 completion*
