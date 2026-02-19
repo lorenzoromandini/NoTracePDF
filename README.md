@@ -16,41 +16,57 @@ open http://localhost:8000
 
 ## Features
 
-### MVP (Phase 1)
-- Merge multiple PDFs
-- Split PDF (by page range, every N pages, extract specific pages)
-- Rotate pages / reorder / delete pages
-- Compress PDF (with quality presets + image optimization)
-- Add / remove password & set permissions
-- Add text/image watermark or stamp
-- Extract text / images / pages from PDF
-- PDF ↔ Images (PNG, JPG, WEBP)
-- Images → PDF
+### MVP (Phase 1) - Complete
+- [x] Merge multiple PDFs
+- [x] Split PDF (by page range, every N pages, extract specific pages)
+- [x] Rotate pages / reorder / delete pages
+- [x] Compress PDF (with quality presets + image optimization)
+- [x] Add / remove password & set permissions
+- [x] Add text/image watermark or stamp
+- [x] Extract text / images / pages from PDF
+- [x] PDF ↔ Images (PNG, JPG, WEBP)
+- [x] Images → PDF
+- [x] Web UI with drag-and-drop, progress tracking
+- [x] Zero-trace architecture verified
 
 ### Tier 1 (Phase 2-3)
-- Crop / scale / resize pages
-- Add page numbers
-- Flatten annotations / remove metadata
-- Compare two PDFs (diff highlighting)
-- Redact sensitive text
-- PDF ↔ Office (Word, Excel, PowerPoint)
-- HTML / Markdown / URL → PDF
-- Text / RTF → PDF
+- [ ] Crop / scale / resize pages
+- [ ] Add page numbers
+- [ ] Flatten annotations / remove metadata
+- [ ] Compare two PDFs (diff highlighting)
+- [ ] Redact sensitive text
+- [ ] PDF ↔ Office (Word, Excel, PowerPoint)
+- [ ] HTML / Markdown / URL → PDF
+- [ ] Text / RTF → PDF
 
 ### Tier 2 (Phase 4)
-- OCR on scanned PDFs (Tesseract)
-- Batch processing via ZIP
-- Client-side fallback for small files (<20MB)
-- PDF preview
-- Dark mode + responsive mobile UI
+- [ ] OCR on scanned PDFs (Tesseract)
+- [ ] Batch processing via ZIP
+- [ ] Client-side fallback for small files (<20MB)
+- [ ] PDF preview
+- [ ] Dark mode + responsive mobile UI
 
-## Philosophy
+## Architecture
 
-- **Zero persistence**: Files processed in-memory only, never written to disk
-- **No traces**: No logging of filenames, IPs, file sizes, or timestamps
-- **Self-hosted**: Run on your own NAS/VPS/home lab
-- **No accounts**: No tracking, no sessions, no data collection
-- **Ephemeral**: Files deleted immediately after download
+### Zero-Trace Guarantee
+
+Every component is designed for privacy:
+
+1. **In-Memory Processing**: All PDF operations use `BytesIO` streams — no user data touches disk
+2. **tmpfs Mounts**: `/tmp` and `/app/uploads` are RAM-backed, ephemeral filesystems
+3. **No Persistent Volumes**: Docker container has zero persistent storage
+4. **Privacy Logging**: Middleware logs only method/path/status — never filenames, IPs, or file sizes
+5. **Cache Headers**: All responses include `Cache-Control: no-store, no-cache, must-revalidate, private`
+
+### Technology Stack
+
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Backend | FastAPI + Python 3.12 | Async web framework |
+| PDF Processing | pikepdf + PyMuPDF | PDF manipulation and extraction |
+| Image Processing | Pillow + pdf2image | Image conversion |
+| Deployment | Docker + tmpfs | Zero-persistence container |
+| Frontend | Vanilla JS + CSS | Minimal footprint, no external dependencies |
 
 ## Configuration
 
@@ -85,6 +101,84 @@ docker run -d \
   notracepdf
 ```
 
+### Verify Deployment
+
+Run the deployment verification script:
+
+```bash
+./scripts/verify_deployment.sh
+```
+
+This checks:
+- Container is running
+- tmpfs mounts are configured
+- No persistent volumes
+- Memory limits are set
+- Health endpoint responds
+- Cache headers are correct
+
+## Development
+
+### Setup
+
+```bash
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run development server
+uvicorn app.main:app --reload
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage
+pytest tests/ --cov=app --cov-report=term
+```
+
+### Test Categories
+
+| Test File | Tests | Purpose |
+|-----------|-------|---------|
+| `test_zero_trace.py` | 11 | Verify no file persistence, tmpfs config, no volumes |
+| `test_security.py` | 17 | Cache headers, logging privacy, file size limits |
+| `test_api.py` | 14 | API endpoint functionality |
+| `test_integration.py` | 12 | End-to-end workflow tests |
+
+## API Endpoints
+
+### PDF Operations
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/pdf/merge` | POST | Merge multiple PDFs |
+| `/api/v1/pdf/split` | POST | Split PDF by range or pages |
+| `/api/v1/pdf/rotate` | POST | Rotate pages |
+| `/api/v1/pdf/reorder` | POST | Reorder pages |
+| `/api/v1/pdf/delete-pages` | POST | Delete pages |
+| `/api/v1/pdf/compress` | POST | Compress with quality presets |
+| `/api/v1/pdf/password/add` | POST | Add password protection |
+| `/api/v1/pdf/password/remove` | POST | Remove password |
+| `/api/v1/pdf/watermark/text` | POST | Add text watermark |
+| `/api/v1/pdf/watermark/image` | POST | Add image watermark |
+| `/api/v1/pdf/extract/text` | POST | Extract text from PDF |
+| `/api/v1/pdf/extract/images` | POST | Extract images from PDF |
+| `/api/v1/pdf/extract/pages` | POST | Extract pages as separate PDFs |
+
+### Image Conversion
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/image/pdf-to-images` | POST | Convert PDF to images |
+| `/api/v1/image/images-to-pdf` | POST | Convert images to PDF |
+
 ## Security
 
 - Container runs as non-root user
@@ -93,6 +187,15 @@ docker run -d \
 - Memory limits prevent resource exhaustion
 - Request timeouts prevent DoS attacks
 - No user data logged (filenames, IPs, file sizes)
+- AES-256 encryption for password protection
+
+## Philosophy
+
+- **Zero persistence**: Files processed in-memory only, never written to disk
+- **No traces**: No logging of filenames, IPs, file sizes, or timestamps
+- **Self-hosted**: Run on your own NAS/VPS/home lab
+- **No accounts**: No tracking, no sessions, no data collection
+- **Ephemeral**: Files deleted immediately after download
 
 ## License
 
