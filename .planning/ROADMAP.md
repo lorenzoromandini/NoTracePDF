@@ -30,7 +30,17 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Zero-trace architecture is verifiable — no files persist after download, no user data logged, cache headers prevent browser caching
   5. Web UI provides drag-and-drop upload, real-time progress, instant download, and clear "files deleted" confirmation
   6. Single Docker container runs on any NAS/VPS/home lab with no external dependencies
-**Plans**: TBD
+**Plans**: 8 plans in 4 waves
+
+Plans:
+- [ ] 01-01-PLAN.md — Project foundation with privacy logging and cache headers (ARCH-01, ARCH-04, ARCH-05, ARCH-08)
+- [ ] 01-02-PLAN.md — Docker infrastructure with tmpfs and zero persistence (ARCH-02, ARCH-03, ARCH-06, ARCH-07, DEPLOY-01 to DEPLOY-04)
+- [ ] 01-03-PLAN.md — PDF core operations: merge, split, rotate, reorder, delete (PDF-01 to PDF-07)
+- [ ] 01-04-PLAN.md — PDF security: compress, password, watermark (PDF-08 to PDF-13)
+- [ ] 01-05-PLAN.md — PDF extraction: text, images, pages (PDF-14 to PDF-16)
+- [ ] 01-06-PLAN.md — Image conversion: PDF↔images (IMG-01 to IMG-06)
+- [ ] 01-07-PLAN.md — Web UI with all features (UI-01 to UI-08)
+- [ ] 01-08-PLAN.md — Zero-trace verification and deployment testing (All ARCH, DEPLOY)
 
 ### Phase 2: Extended PDF Operations
 **Goal**: Users have advanced document manipulation capabilities for professional workflows
@@ -75,7 +85,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. MVP Foundation | 0/TBD | Not started | - |
+| 1. MVP Foundation | 0/8 | Ready to execute | - |
 | 2. Extended PDF Operations | 0/TBD | Not started | - |
 | 3. Document Conversions | 0/TBD | Not started | - |
 | 4. Advanced Features | 0/TBD | Not started | - |
