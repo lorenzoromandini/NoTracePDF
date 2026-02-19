@@ -1,0 +1,57 @@
+# NoTracePDF Docker Compose Configuration
+#
+# Privacy-first configuration:
+# - tmpfs mounts for zero persistence
+# - Memory limits to prevent OOM affecting host
+# - NO persistent volumes
+
+services:
+  notracepdf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: notracepdf:latest
+    container_name: notracepdf
+    
+    ports:
+      - "8000:8000"
+    
+    # tmpfs mounts for zero persistence (RAM-backed)
+    # Files exist only in memory, gone when container stops
+    tmpfs:
+      - /tmp:noexec,nosuid,size=512m
+      - /app/uploads:noexec,nosuid,size=256m
+    
+    environment:
+      - APP_NAME=NoTracePDF
+      - DEBUG=false
+      - MAX_FILE_SIZE_MB=100
+      - UPLOAD_DIR=/app/uploads
+      - REQUEST_TIMEOUT_SECONDS=30
+    
+    # Resource limits to prevent resource exhaustion
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "2"
+        reservations:
+          memory: 256M
+          cpus: "0.5"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Security: no privileged mode
+    privileged: false
+    
+    # Read-only root filesystem not possible with tmpfs writes
+    # but application only writes to tmpfs mounts
