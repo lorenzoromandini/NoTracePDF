@@ -4,6 +4,16 @@ Self-hosted, zero-trace, ephemeral PDF and file conversion toolkit.
 
 Like iLovePDF or PDF24Tools, but nothing is ever saved, logged, or traced — files exist only during processing and disappear forever the moment the download finishes.
 
+## Quick Start
+
+```bash
+# Clone and run with Docker Compose
+docker-compose up -d
+
+# Access the application
+open http://localhost:8000
+```
+
 ## Features
 
 ### MVP (Phase 1)
@@ -42,24 +52,52 @@ Like iLovePDF or PDF24Tools, but nothing is ever saved, logged, or traced — fi
 - **No accounts**: No tracking, no sessions, no data collection
 - **Ephemeral**: Files deleted immediately after download
 
+## Configuration
+
+Environment variables (see `.env.example`):
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `APP_NAME` | NoTracePDF | Application name |
+| `DEBUG` | false | Enable debug mode |
+| `MAX_FILE_SIZE_MB` | 100 | Maximum upload file size |
+| `UPLOAD_DIR` | /app/uploads | Temporary upload directory (tmpfs) |
+| `REQUEST_TIMEOUT_SECONDS` | 30 | Request timeout in seconds |
+
 ## Deployment
 
-Docker deployment with tmpfs mounts for zero persistence:
+### Docker Compose (Recommended)
+
+```bash
+docker-compose up -d
+```
+
+### Docker Run
 
 ```bash
 docker run -d \
-  --tmpfs /tmp:rw,noexec,nosuid,size=1g \
+  --name notracepdf \
+  --tmpfs /tmp:rw,noexec,nosuid,size=512m \
+  --tmpfs /app/uploads:rw,noexec,nosuid,size=256m \
+  --memory=1g \
+  --cpus=2 \
   -p 8000:8000 \
   notracepdf
 ```
 
+## Security
+
+- Container runs as non-root user
+- No persistent Docker volumes
+- tmpfs mounts for all temporary storage (RAM-backed)
+- Memory limits prevent resource exhaustion
+- Request timeouts prevent DoS attacks
+- No user data logged (filenames, IPs, file sizes)
+
 ## License
 
-MIT or AGPLv3
-
-## Status
-
-Project initialized. See `.planning/ROADMAP.md` for development phases.
+MIT License - See [LICENSE](LICENSE)
 
 ---
-*Last updated: 2026-02-19*
+
+*Built for privacy-conscious individuals and teams who want PDF manipulation features on their own server.*
