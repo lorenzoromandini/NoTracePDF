@@ -15,6 +15,7 @@ from app.core.config import settings
 from app.core.cleanup import register_cleanup_handlers
 from app.middleware.privacy_logging import PrivacyLoggingMiddleware
 from app.middleware.cache_headers import CacheHeadersMiddleware
+from app.api.v1 import api_router
 
 
 @asynccontextmanager
@@ -50,6 +51,9 @@ app.add_middleware(PrivacyLoggingMiddleware)
 
 # Add cache control headers middleware
 app.add_middleware(CacheHeadersMiddleware)
+
+# Include API routes
+app.include_router(api_router, prefix="/api/v1")
 
 
 @app.get("/health")

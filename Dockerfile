@@ -14,9 +14,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Install system dependencies (minimal for core app)
+# Install system dependencies
+# - poppler-utils: required by pdf2image for PDF to image conversion
+# - qpdf-libs: required by pikepdf for PDF manipulation
 RUN apk add --no-cache \
-    curl
+    curl \
+    poppler-utils \
+    qpdf-libs
 
 # Create non-root user for security
 RUN addgroup -S appgroup && \
