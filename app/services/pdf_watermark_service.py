@@ -245,15 +245,14 @@ def _add_content_to_page(page: Page, content: bytes, pdf: Pdf) -> None:
     if Name.Contents in page:
         existing = page[Name.Contents]
         if isinstance(existing, pikepdf.Array):
-            # Multiple content streams
+            # Multiple content streams - append new stream
             stream = pdf.make_stream(content)
-            existing.append(stream.indirect_reference)
+            existing.append(stream)
         else:
             # Single content stream - convert to array
-            array = pikepdf.Array([existing])
             stream = pdf.make_stream(content)
-            array.append(stream.indirect_reference)
-            page[Name.Contents] = array
+            new_contents = pikepdf.Array([existing, stream])
+            page[Name.Contents] = new_contents
     else:
         # No existing content
         stream = pdf.make_stream(content)
@@ -395,9 +394,9 @@ Q
     if Name.Contents in page:
         existing = page[Name.Contents]
         if isinstance(existing, pikepdf.Array):
-            existing.append(stream.indirect_reference)
+            existing.append(stream)
         else:
-            array = pikepdf.Array([existing, stream.indirect_reference])
-            page[Name.Contents] = array
+            new_contents = pikepdf.Array([existing, stream])
+            page[Name.Contents] = new_contents
     else:
         page[Name.Contents] = stream
