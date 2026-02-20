@@ -210,7 +210,7 @@ class NoTracePDFApp {
      * Initialize theme from localStorage
      */
     initTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
         this.updateThemeIcon(savedTheme);
         
