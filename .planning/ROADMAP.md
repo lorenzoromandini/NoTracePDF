@@ -87,7 +87,14 @@ Plans:
   3. User can process small files (<20MB) entirely client-side for maximum privacy
   4. User can preview PDFs before processing
   5. UI supports dark mode and is fully responsive on mobile devices
-**Plans**: TBD
+**Plans**: 5 plans in 1 wave
+
+Plans:
+- [ ] 04-01-PLAN.md — OCR text extraction from scanned PDFs using Tesseract (ADV-01)
+- [ ] 04-02-PLAN.md — Batch processing via ZIP upload/download (ADV-02)
+- [ ] 04-03-PLAN.md — Client-side fallback for merge/split/rotate on files <20MB (ADV-03)
+- [ ] 04-04-PLAN.md — PDF preview using PDF.js (ADV-04)
+- [ ] 04-05-PLAN.md — Dark mode and responsive mobile-first UI (ADV-05, ADV-06)
 
 ## Progress
 
@@ -99,10 +106,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. MVP Foundation | 8/8 | Complete | 01-01, 01-02, 01-03, 01-04, 01-05, 01-06, 01-07, 01-08 |
 | 2. Extended PDF Operations | 4/4 | Complete | 02-01, 02-02, 02-03, 02-04 |
 | 3. Document Conversions | 3/3 | Complete | 03-01, 03-02, 03-03 |
-| 4. Advanced Features | 0/TBD | Not started | - |
+| 4. Advanced Features | 0/5 | Planned | - |
 
 ---
 *Roadmap created: 2026-02-19*
 *Depth: comprehensive*
 *Coverage: 69/69 requirements mapped*
-*Last updated: 2026-02-20 after Phase 3 planning*
+*Last updated: 2026-02-20 after Phase 4 planning*
