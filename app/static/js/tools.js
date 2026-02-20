@@ -700,6 +700,186 @@ const TOOL_CONFIG = {
                 hint: 'Leave empty for all pages'
             }
         ]
+    },
+
+    // =====================================================
+    // Phase 3: Document Conversions
+    // =====================================================
+
+    // PDF to Office
+    'pdf-to-word': {
+        name: 'PDF to Word',
+        endpoint: '/api/v1/convert/pdf-to-word',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: null
+    },
+
+    'pdf-to-excel': {
+        name: 'PDF to Excel',
+        endpoint: '/api/v1/convert/pdf-to-excel',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: null
+    },
+
+    'pdf-to-powerpoint': {
+        name: 'PDF to PowerPoint',
+        endpoint: '/api/v1/convert/pdf-to-powerpoint',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: null
+    },
+
+    // Office to PDF
+    'word-to-pdf': {
+        name: 'Word to PDF',
+        endpoint: '/api/v1/convert/word-to-pdf',
+        multipleFiles: false,
+        accepts: ['.docx', '.doc'],
+        acceptMime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword',
+        options: null
+    },
+
+    'excel-to-pdf': {
+        name: 'Excel to PDF',
+        endpoint: '/api/v1/convert/excel-to-pdf',
+        multipleFiles: false,
+        accepts: ['.xlsx', '.xls'],
+        acceptMime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel',
+        options: null
+    },
+
+    'powerpoint-to-pdf': {
+        name: 'PowerPoint to PDF',
+        endpoint: '/api/v1/convert/powerpoint-to-pdf',
+        multipleFiles: false,
+        accepts: ['.pptx', '.ppt'],
+        acceptMime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint',
+        options: null
+    },
+
+    // Web content to PDF
+    'html-to-pdf': {
+        name: 'HTML to PDF',
+        endpoint: '/api/v1/convert/html-to-pdf',
+        multipleFiles: false,
+        accepts: ['.html', '.htm'],
+        acceptMime: 'text/html',
+        options: [
+            {
+                key: 'html',
+                label: 'HTML Content',
+                type: 'textarea',
+                required: true,
+                placeholder: '<html>...</html>',
+                hint: 'Paste HTML code or upload an HTML file'
+            },
+            {
+                key: 'base_url',
+                label: 'Base URL (optional)',
+                type: 'text',
+                placeholder: 'https://example.com',
+                hint: 'For resolving relative URLs'
+            }
+        ],
+        acceptsText: true
+    },
+
+    'markdown-to-pdf': {
+        name: 'Markdown to PDF',
+        endpoint: '/api/v1/convert/markdown-to-pdf',
+        multipleFiles: false,
+        accepts: ['.md', '.markdown'],
+        acceptMime: 'text/markdown',
+        options: [
+            {
+                key: 'markdown',
+                label: 'Markdown Content',
+                type: 'textarea',
+                required: true,
+                placeholder: '# Heading\n\nYour content here...',
+                hint: 'Paste Markdown code or upload a .md file'
+            }
+        ],
+        acceptsText: true
+    },
+
+    'url-to-pdf': {
+        name: 'URL to PDF',
+        endpoint: '/api/v1/convert/url-to-pdf',
+        multipleFiles: false,
+        accepts: [],
+        acceptMime: '',
+        options: [
+            {
+                key: 'url',
+                label: 'Web Page URL',
+                type: 'text',
+                required: true,
+                placeholder: 'https://example.com',
+                hint: 'Enter a public URL to convert'
+            },
+            {
+                key: 'timeout',
+                label: 'Timeout (seconds)',
+                type: 'number',
+                default: 30,
+                min: 5,
+                max: 120
+            }
+        ],
+        noFileUpload: true
+    },
+
+    // Text/RTF to PDF
+    'text-to-pdf': {
+        name: 'Text to PDF',
+        endpoint: '/api/v1/convert/text-to-pdf',
+        multipleFiles: false,
+        accepts: ['.txt'],
+        acceptMime: 'text/plain',
+        options: [
+            {
+                key: 'text',
+                label: 'Text Content',
+                type: 'textarea',
+                placeholder: 'Paste or type your text here...',
+                hint: 'Leave empty to upload a file instead'
+            },
+            {
+                key: 'font_size',
+                label: 'Font size',
+                type: 'number',
+                default: 12,
+                min: 6,
+                max: 72
+            },
+            {
+                key: 'font_family',
+                label: 'Font family',
+                type: 'select',
+                default: 'helv',
+                options: [
+                    { value: 'helv', label: 'Helvetica (sans-serif)' },
+                    { value: 'cour', label: 'Courier (monospace)' },
+                    { value: 'tim', label: 'Times (serif)' }
+                ]
+            }
+        ],
+        acceptsText: true
+    },
+
+    'rtf-to-pdf': {
+        name: 'RTF to PDF',
+        endpoint: '/api/v1/convert/rtf-to-pdf',
+        multipleFiles: false,
+        accepts: ['.rtf'],
+        acceptMime: 'application/rtf,text/rtf',
+        options: null
     }
 };
 
@@ -801,6 +981,16 @@ function generateOptionsHTML(toolId) {
                 html += `<input type="file" class="option-input" name="${option.key}"
                     accept="${option.acceptMime || ''}">`;
                 break;
+
+            case 'textarea':
+                html += `<textarea class="option-textarea" name="${option.key}"
+                    rows="6"
+                    placeholder="${option.placeholder || ''}"
+                    ${option.required ? 'required' : ''}></textarea>`;
+                if (option.hint) {
+                    html += `<span class="option-hint">${option.hint}</span>`;
+                }
+                break;
         }
 
         html += `</div>`;
@@ -847,8 +1037,11 @@ function collectFormData(toolId, files, optionsForm) {
     const config = TOOL_CONFIG[toolId];
     const formData = new FormData();
     
-    // Add files - special handling for compare tool
-    if (toolId === 'compare') {
+    // Add files - special handling for different tools
+    if (config.noFileUpload) {
+        // URL to PDF and similar tools don't need file upload
+        // Files array will be empty
+    } else if (toolId === 'compare') {
         // Compare needs two files: file1 and file2
         if (files.length >= 2) {
             formData.append('file1', files[0]);
@@ -861,7 +1054,7 @@ function collectFormData(toolId, files, optionsForm) {
         for (const file of files) {
             formData.append('files', file);
         }
-    } else {
+    } else if (files && files.length > 0) {
         formData.append('file', files[0]);
     }
     
@@ -893,6 +1086,7 @@ function collectFormData(toolId, files, optionsForm) {
                     }
                     break;
 
+                case 'textarea':
                 case 'text':
                     // Special handling for page inputs
                     if (option.key === 'pages' || option.key === 'pageNumbers') {
@@ -907,7 +1101,10 @@ function collectFormData(toolId, files, optionsForm) {
                             formData.append(option.key, JSON.stringify(patterns));
                         }
                     } else {
-                        formData.append(option.key, input.value);
+                        // For text/textarea fields, only add if not empty
+                        if (input.value && input.value.trim()) {
+                            formData.append(option.key, input.value);
+                        }
                     }
                     break;
 

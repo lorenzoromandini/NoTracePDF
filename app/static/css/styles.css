@@ -415,6 +415,24 @@ body {
     box-shadow: 0 0 0 3px var(--primary-light);
 }
 
+.option-textarea {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    transition: var(--transition);
+    resize: vertical;
+    min-height: 100px;
+}
+
+.option-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
 .option-select {
     width: 100%;
     padding: 0.625rem 0.875rem;

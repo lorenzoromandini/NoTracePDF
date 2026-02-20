@@ -97,14 +97,22 @@ class NoTracePDFApp {
         // Update modal title
         this.modalTitle.textContent = config.name;
 
-        // Configure upload handler
-        const acceptedTypes = config.acceptMime ? config.acceptMime.split(',') : [];
-        const acceptedExtensions = config.accepts || [];
-        this.uploadHandler.setAcceptedTypes(acceptedTypes, acceptedExtensions);
-        this.uploadHandler.setMultiple(config.multipleFiles);
+        // Check if this tool requires file upload
+        if (config.noFileUpload) {
+            // Hide upload zone for tools that don't need files (like URL to PDF)
+            this.uploadZone.classList.add('hidden');
+            this.uploadHandler.clearFiles();
+        } else {
+            // Configure upload handler
+            const acceptedTypes = config.acceptMime ? config.acceptMime.split(',') : [];
+            const acceptedExtensions = config.accepts || [];
+            this.uploadHandler.setAcceptedTypes(acceptedTypes, acceptedExtensions);
+            this.uploadHandler.setMultiple(config.multipleFiles);
 
-        // Update file input accept attribute
-        this.fileInput.accept = acceptedExtensions.join(',');
+            // Update file input accept attribute
+            this.fileInput.accept = acceptedExtensions.join(',');
+            this.uploadZone.classList.remove('hidden');
+        }
 
         // Generate options HTML
         const optionsHTML = generateOptionsHTML(toolId);
@@ -123,6 +131,11 @@ class NoTracePDFApp {
 
         // Reset state
         this.resetModalState();
+
+        // For noFileUpload tools, enable process button immediately if options are valid
+        if (config.noFileUpload) {
+            this.btnProcess.disabled = false;
+        }
     }
 
     setupOptionVisibility() {
@@ -196,8 +209,14 @@ class NoTracePDFApp {
         // Clear last result
         this.lastResult = null;
 
-        // Show upload zone
-        this.uploadZone.classList.remove('hidden');
+        // Show upload zone (unless noFileUpload tool)
+        const config = this.currentConfig;
+        if (config && config.noFileUpload) {
+            this.uploadZone.classList.add('hidden');
+            this.btnProcess.disabled = false;
+        } else {
+            this.uploadZone.classList.remove('hidden');
+        }
     }
 
     handleFilesChange(files, errors) {
@@ -216,7 +235,10 @@ class NoTracePDFApp {
 
     async processFiles() {
         const files = this.uploadHandler.getFiles();
-        if (files.length === 0) return;
+        const config = this.currentConfig;
+
+        // For noFileUpload tools, files array is empty
+        if (!config.noFileUpload && files.length === 0) return;
 
         // Validate required fields
         if (!this.validateOptions()) {
@@ -286,8 +308,10 @@ class NoTracePDFApp {
             this.progressSection.classList.add('hidden');
             this.showError(error.message);
             this.btnProcess.disabled = false;
-            this.uploadZone.classList.remove('hidden');
-            this.fileListContainer.classList.remove('hidden');
+            if (!config.noFileUpload) {
+                this.uploadZone.classList.remove('hidden');
+                this.fileListContainer.classList.remove('hidden');
+            }
             this.toolOptions.classList.remove('hidden');
         }
     }
