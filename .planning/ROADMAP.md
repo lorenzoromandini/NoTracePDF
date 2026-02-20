@@ -52,7 +52,13 @@ Plans:
   3. User can remove all metadata for complete document anonymization
   4. User can compare two PDFs with visual diff highlighting
   5. User can redact sensitive text permanently (blacked out, not removable)
-**Plans**: TBD
+**Plans**: 4 plans in 1 wave
+
+Plans:
+- [ ] 02-01-PLAN.md — Page dimension operations: crop, scale, resize (PDF-17, PDF-18, PDF-19)
+- [ ] 02-02-PLAN.md — Page numbers and anonymization: numbers, flatten, metadata (PDF-20, PDF-21, PDF-22)
+- [ ] 02-03-PLAN.md — PDF comparison with visual diff highlighting (PDF-23)
+- [ ] 02-04-PLAN.md — Permanent text redaction (PDF-24)
 
 ### Phase 3: Document Conversions
 **Goal**: Users can convert between PDF and common document formats without leaving the zero-trace environment
@@ -86,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. MVP Foundation | 8/8 | Complete | 01-01, 01-02, 01-03, 01-04, 01-05, 01-06, 01-07, 01-08 |
-| 2. Extended PDF Operations | 0/TBD | Not started | - |
+| 2. Extended PDF Operations | 0/4 | Not started | - |
 | 3. Document Conversions | 0/TBD | Not started | - |
 | 4. Advanced Features | 0/TBD | Not started | - |
 
@@ -94,4 +100,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 *Roadmap created: 2026-02-19*
 *Depth: comprehensive*
 *Coverage: 69/69 requirements mapped*
-*Last updated: 2026-02-19 after Phase 1 completion*
+*Last updated: 2026-02-20 after Phase 2 planning*
