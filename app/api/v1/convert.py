@@ -22,11 +22,17 @@ from app.services.web_conversion_service import (
     markdown_to_pdf,
     url_to_pdf,
 )
+from app.services.text_conversion_service import (
+    text_to_pdf,
+    rtf_to_pdf,
+    validate_rtf_content,
+)
 from app.utils.file_utils import (
     validate_pdf,
     validate_docx,
     validate_xlsx,
     validate_pptx,
+    validate_rtf,
     FileValidationError,
 )
 
@@ -367,3 +373,132 @@ async def api_url_to_pdf(
         if "403" in error_msg or "forbidden" in error_msg.lower():
             raise HTTPException(status_code=403, detail=f"Access forbidden: {url}")
         raise HTTPException(status_code=500, detail=f"Error converting URL to PDF: {error_msg}")
+
+
+# =====================================================
+# Text/RTF to PDF Conversions (CONV-10, CONV-11)
+# =====================================================
+
+
+@router.post("/text-to-pdf")
+async def api_text_to_pdf(
+    text: Optional[str] = Form(None, description="Text content to convert"),
+    file: Optional[UploadFile] = File(None, description="Text file to convert (.txt)"),
+    font_size: int = Form(12, description="Font size in points", ge=6, le=72),
+    font_family: str = Form("helv", description="Font family: helv, cour, or tim")
+):
+    """
+    Convert plain text to PDF.
+    
+    Provide either 'text' (string) or 'file' (.txt upload), not both.
+    
+    Font family options:
+    - helv: Helvetica (sans-serif, default)
+    - cour: Courier (monospace)
+    - tim: Times (serif)
+    
+    Text wrapping and multi-page documents are handled automatically.
+    """
+    try:
+        # Validate font family
+        valid_fonts = {'helv', 'cour', 'tim'}
+        if font_family.lower() not in valid_fonts:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid font family. Must be one of: {', '.join(valid_fonts)}"
+            )
+        
+        # Get text content
+        if file:
+            content = await file.read()
+            try:
+                text_content = content.decode('utf-8')
+            except UnicodeDecodeError:
+                try:
+                    text_content = content.decode('latin-1')
+                except UnicodeDecodeError:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Could not decode text file. Please use UTF-8 encoding."
+                    )
+        elif text:
+            text_content = text
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="Either 'text' or 'file' parameter is required"
+            )
+        
+        if not text_content.strip():
+            raise HTTPException(status_code=400, detail="Text content is empty")
+        
+        # Convert to PDF
+        pdf_bytes = text_to_pdf(
+            text_content,
+            font_size=font_size,
+            font_family=font_family.lower()
+        )
+        
+        # Generate filename
+        if file and file.filename:
+            base_name = file.filename.rsplit('.', 1)[0]
+        else:
+            base_name = "converted"
+        filename = f"{base_name}.pdf"
+        
+        return StreamingResponse(
+            pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"'
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error converting text to PDF: {str(e)}")
+
+
+@router.post("/rtf-to-pdf")
+async def api_rtf_to_pdf(
+    file: UploadFile = File(..., description="RTF file to convert")
+):
+    """
+    Convert RTF document to PDF.
+    
+    RTF files are converted using LibreOffice headless.
+    Formatting (bold, italic, tables, etc.) is preserved.
+    
+    All processing uses in-memory streams with temp files only in tmpfs.
+    """
+    try:
+        # Read content
+        content = await file.read()
+        
+        # Validate RTF header
+        if not validate_rtf_content(content):
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid RTF file. File does not have RTF header."
+            )
+        
+        # Convert to PDF
+        rtf_bytes = BytesIO(content)
+        pdf_bytes = rtf_to_pdf(rtf_bytes)
+        
+        base_name = file.filename.rsplit('.', 1)[0] if file.filename else "document"
+        filename = f"{base_name}.pdf"
+        
+        return StreamingResponse(
+            pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"'
+            }
+        )
+    except HTTPException:
+        raise
+    except TimeoutError as e:
+        raise HTTPException(status_code=504, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error converting RTF to PDF: {str(e)}")
