@@ -313,6 +313,51 @@ const TOOL_CONFIG = {
         returnsText: true
     },
 
+    'batch-process': {
+        name: 'Batch Process',
+        endpoint: '/api/v1/batch/process',
+        multipleFiles: false,  // Single ZIP file
+        accepts: ['.zip'],
+        acceptMime: 'application/zip',
+        options: [
+            {
+                key: 'operation',
+                label: 'Operation',
+                type: 'select',
+                default: 'compress',
+                options: [
+                    { value: 'compress', label: 'Compress all PDFs' },
+                    { value: 'rotate', label: 'Rotate all PDFs 90°' },
+                    { value: 'split', label: 'Split each PDF' }
+                ]
+            },
+            {
+                key: 'quality',
+                label: 'Quality (for compress)',
+                type: 'select',
+                default: 'medium',
+                showIf: { operation: 'compress' },
+                options: [
+                    { value: 'low', label: 'Low (smallest)' },
+                    { value: 'medium', label: 'Medium (balanced)' },
+                    { value: 'high', label: 'High (best quality)' }
+                ]
+            },
+            {
+                key: 'rotate_degrees',
+                label: 'Rotation (if rotate)',
+                type: 'select',
+                default: '90',
+                showIf: { operation: 'rotate' },
+                options: [
+                    { value: '90', label: '90° clockwise' },
+                    { value: '180', label: '180°' },
+                    { value: '270', label: '270° clockwise' }
+                ]
+            }
+        ]
+    },
+
     'extract-images': {
         name: 'Extract Images',
         endpoint: '/api/v1/pdf/extract/images',

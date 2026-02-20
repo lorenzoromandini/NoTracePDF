@@ -7,6 +7,7 @@ from app.api.v1.pdf import router as pdf_router
 from app.api.v1.image import router as image_router
 from app.api.v1.convert import router as convert_router
 from app.api.v1.ocr import router as ocr_router
+from app.api.v1.batch import router as batch_router
 
 api_router = APIRouter()
 
@@ -15,5 +16,6 @@ api_router.include_router(pdf_router)
 api_router.include_router(image_router)
 api_router.include_router(convert_router)
 api_router.include_router(ocr_router)
+api_router.include_router(batch_router)
 
 __all__ = ["api_router"]
