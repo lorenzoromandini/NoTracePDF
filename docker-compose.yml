@@ -1,23 +1,17 @@
-# NoTracePDF Docker Compose Configuration
-#
-# Privacy-first configuration:
-# - tmpfs mounts for zero persistence
-# - Memory limits to prevent OOM affecting host
-# - NO persistent volumes
+# NoTracePDF Docker Compose for Raspberry Pi 4
+# Optimized for 8GB RAM
 
 services:
   notracepdf:
     build:
       context: .
       dockerfile: Dockerfile
-    image: notracepdf:latest
+    image: notracepdf:arm64
     container_name: notracepdf
     
     ports:
       - "8000:8000"
     
-    # tmpfs mounts for zero persistence (RAM-backed)
-    # Files exist only in memory, gone when container stops
     tmpfs:
       - /tmp:noexec,nosuid,size=512m
       - /app/uploads:noexec,nosuid,size=256m
@@ -27,31 +21,24 @@ services:
       - DEBUG=false
       - MAX_FILE_SIZE_MB=100
       - UPLOAD_DIR=/app/uploads
-      - REQUEST_TIMEOUT_SECONDS=30
+      - REQUEST_TIMEOUT_SECONDS=60
     
-    # Resource limits to prevent resource exhaustion
+    # Raspberry Pi 4 - 8GB: 1GB limit, 2 cores
     deploy:
       resources:
         limits:
           memory: 1G
           cpus: "2"
         reservations:
-          memory: 256M
-          cpus: "0.5"
+          memory: 512M
+          cpus: "1"
     
-    # Health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 20s
     
-    # Restart policy
     restart: unless-stopped
-    
-    # Security: no privileged mode
     privileged: false
-    
-    # Read-only root filesystem not possible with tmpfs writes
-    # but application only writes to tmpfs mounts

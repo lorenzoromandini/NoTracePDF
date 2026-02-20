@@ -1,11 +1,11 @@
-# NoTracePDF Docker Compose with Caddy (HTTPS)
+# NoTracePDF Docker Compose with Caddy (HTTPS) for Raspberry Pi
 
 services:
   notracepdf:
     build:
       context: .
       dockerfile: Dockerfile
-    image: notracepdf:latest
+    image: notracepdf:arm64
     container_name: notracepdf
     
     expose:
@@ -20,7 +20,7 @@ services:
       - DEBUG=false
       - MAX_FILE_SIZE_MB=100
       - UPLOAD_DIR=/app/uploads
-      - REQUEST_TIMEOUT_SECONDS=30
+      - REQUEST_TIMEOUT_SECONDS=60
     
     deploy:
       resources:
@@ -28,15 +28,15 @@ services:
           memory: 1G
           cpus: "2"
         reservations:
-          memory: 256M
-          cpus: "0.5"
+          memory: 512M
+          cpus: "1"
     
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 20s
     
     restart: unless-stopped
     privileged: false
