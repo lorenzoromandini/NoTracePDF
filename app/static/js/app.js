@@ -38,6 +38,9 @@ class NoTracePDFApp {
         this.apiClient = new APIClient();
         this.uploadHandler = null;
         this.lastResult = null;
+        
+        // Client-side processor for small files
+        this.clientSideProcessor = new ClientSideProcessor();
 
         // Initialize
         this.init();
@@ -253,7 +256,14 @@ class NoTracePDFApp {
         this.btnProcess.disabled = true;
 
         try {
-            // Collect form data
+            // Check if we can process client-side (for small files)
+            if (this.clientSideProcessor.canProcessClientSide(files, this.currentTool)) {
+                // Process in browser - zero server contact
+                await this.processClientSide(files);
+                return;
+            }
+            
+            // Otherwise, submit to API
             let formData = collectFormData(this.currentTool, files, this.toolOptions);
             
             // Handle watermark image type switch
@@ -314,6 +324,107 @@ class NoTracePDFApp {
             }
             this.toolOptions.classList.remove('hidden');
         }
+    }
+    
+    /**
+     * Process files entirely in the browser (no server contact)
+     */
+    async processClientSide(files) {
+        try {
+            this.progressText.textContent = 'Processing in browser (zero server contact)...';
+            this.progressFill.style.width = '50%';
+            
+            let result;
+            const options = this._collectClientSideOptions();
+            
+            switch (this.currentTool) {
+                case 'merge':
+                    result = await this.clientSideProcessor.merge(files);
+                    break;
+                case 'split':
+                    result = await this.clientSideProcessor.split(files[0], options);
+                    break;
+                case 'rotate':
+                    result = await this.clientSideProcessor.rotate(
+                        files[0],
+                        options.degrees || 90,
+                        options.pages || 'all'
+                    );
+                    break;
+                default:
+                    throw new Error('Unsupported client-side operation');
+            }
+            
+            this.progressFill.style.width = '100%';
+            this.progressText.textContent = 'Processing complete!';
+            
+            // Store result
+            this.lastResult = {
+                type: 'file',
+                blob: result.blob,
+                filename: result.filename
+            };
+            
+            // Show result
+            setTimeout(() => {
+                this.progressSection.classList.add('hidden');
+                this.showFileResult();
+            }, 500);
+            
+        } catch (error) {
+            this.progressSection.classList.add('hidden');
+            this.showError(`Client-side processing failed: ${error.message}`);
+            this.btnProcess.disabled = false;
+            this.uploadZone.classList.remove('hidden');
+            this.fileListContainer.classList.remove('hidden');
+            this.toolOptions.classList.remove('hidden');
+        }
+    }
+    
+    /**
+     * Collect options for client-side processing
+     */
+    _collectClientSideOptions() {
+        const options = {};
+        
+        if (!this.toolOptions) return options;
+        
+        // Get rotation degrees
+        const degreesInput = this.toolOptions.querySelector('[name="degrees"]:checked');
+        if (degreesInput) {
+            options.degrees = parseInt(degreesInput.value, 10);
+        }
+        
+        // Get pages
+        const pagesSelect = this.toolOptions.querySelector('[name="pages"]');
+        if (pagesSelect && pagesSelect.value !== 'all') {
+            const pageNumbersInput = this.toolOptions.querySelector('[name="pageNumbers"]');
+            if (pageNumbersInput && pageNumbersInput.value) {
+                // Parse page numbers
+                const pages = pageNumbersInput.value.split(',')
+                    .map(s => parseInt(s.trim(), 10))
+                    .filter(n => !isNaN(n));
+                options.pages = pages;
+            }
+        }
+        
+        // Get split mode options
+        const modeSelect = this.toolOptions.querySelector('[name="mode"]');
+        if (modeSelect) {
+            options.mode = modeSelect.value;
+        }
+        
+        const startInput = this.toolOptions.querySelector('[name="start"]');
+        if (startInput) {
+            options.start = parseInt(startInput.value, 10);
+        }
+        
+        const endInput = this.toolOptions.querySelector('[name="end"]');
+        if (endInput) {
+            options.end = parseInt(endInput.value, 10);
+        }
+        
+        return options;
     }
 
     validateOptions() {
