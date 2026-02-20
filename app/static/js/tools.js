@@ -289,6 +289,30 @@ const TOOL_CONFIG = {
         returnsText: true
     },
 
+    // =====================================================
+    // Phase 4: Advanced Features
+    // =====================================================
+
+    'ocr-extract': {
+        name: 'OCR Extract Text',
+        endpoint: '/api/v1/ocr/extract',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'language',
+                label: 'Language',
+                type: 'select',
+                default: 'eng',
+                options: [
+                    { value: 'eng', label: 'English' }
+                ]
+            }
+        ],
+        returnsText: true
+    },
+
     'extract-images': {
         name: 'Extract Images',
         endpoint: '/api/v1/pdf/extract/images',

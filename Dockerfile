@@ -19,6 +19,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # - libqpdf-dev: pikepdf dependency
 # - LibreOffice: Office document conversions
 # - Pango/GDK: WeasyPrint dependencies for HTML to PDF
+# - tesseract-ocr: OCR engine for scanned PDFs
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     poppler-utils \
@@ -30,6 +31,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpangocairo-1.0-0 \
     libgdk-pixbuf-2.0-0 \
     shared-mime-info \
+    tesseract-ocr \
+    tesseract-ocr-eng \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for security
