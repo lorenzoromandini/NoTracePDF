@@ -82,20 +82,78 @@ docker exec notracepdf mount | grep tmpfs
 ## API Endpoints
 
 ### PDF Operations
-`POST /api/v1/pdf/merge` `split` `rotate` `reorder` `delete-pages` `compress` `password/add` `password/remove` `watermark/text` `watermark/image` `extract/text` `extract/images` `extract/pages` `crop` `scale` `resize` `page-numbers` `flatten` `metadata/remove` `compare` `redact` `ocr`
 
-### Conversions
-`POST /api/v1/convert/pdf-to-word` `pdf-to-excel` `pdf-to-ppt` `word-to-pdf` `excel-to-pdf` `ppt-to-pdf` `html-to-pdf` `markdown-to-pdf` `url-to-pdf` `text-to-pdf` `rtf-to-pdf`
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/pdf/merge` | POST | Merge multiple PDFs |
+| `/api/v1/pdf/split` | POST | Split PDF by range or pages |
+| `/api/v1/pdf/rotate` | POST | Rotate pages |
+| `/api/v1/pdf/reorder` | POST | Reorder pages |
+| `/api/v1/pdf/delete-pages` | POST | Delete pages |
+| `/api/v1/pdf/compress` | POST | Compress with quality presets |
+| `/api/v1/pdf/password/add` | POST | Add password protection |
+| `/api/v1/pdf/password/remove` | POST | Remove password |
+| `/api/v1/pdf/watermark/text` | POST | Add text watermark |
+| `/api/v1/pdf/watermark/image` | POST | Add image watermark |
+| `/api/v1/pdf/extract/text` | POST | Extract text from PDF |
+| `/api/v1/pdf/extract/images` | POST | Extract images from PDF |
+| `/api/v1/pdf/extract/pages` | POST | Extract pages as separate PDFs |
+| `/api/v1/pdf/crop` | POST | Crop pages to dimensions |
+| `/api/v1/pdf/scale` | POST | Scale pages by percentage |
+| `/api/v1/pdf/resize` | POST | Resize pages to standard sizes |
+| `/api/v1/pdf/page-numbers` | POST | Add page numbers |
+| `/api/v1/pdf/flatten` | POST | Flatten annotations |
+| `/api/v1/pdf/metadata/remove` | POST | Remove all metadata |
+| `/api/v1/pdf/compare` | POST | Compare two PDFs (diff) |
+| `/api/v1/pdf/redact` | POST | Permanently redact text |
+| `/api/v1/pdf/ocr` | POST | OCR text extraction |
 
-### Batch & Images
-`POST /api/v1/batch/process` `image/pdf-to-images` `image/images-to-pdf`
+### Document Conversions
 
-### Example
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/convert/pdf-to-word` | POST | PDF → Word (.docx) |
+| `/api/v1/convert/pdf-to-excel` | POST | PDF → Excel (.xlsx) |
+| `/api/v1/convert/pdf-to-ppt` | POST | PDF → PowerPoint (.pptx) |
+| `/api/v1/convert/word-to-pdf` | POST | Word → PDF |
+| `/api/v1/convert/excel-to-pdf` | POST | Excel → PDF |
+| `/api/v1/convert/ppt-to-pdf` | POST | PowerPoint → PDF |
+| `/api/v1/convert/html-to-pdf` | POST | HTML → PDF |
+| `/api/v1/convert/markdown-to-pdf` | POST | Markdown → PDF |
+| `/api/v1/convert/url-to-pdf` | POST | URL → PDF |
+| `/api/v1/convert/text-to-pdf` | POST | Plain text → PDF |
+| `/api/v1/convert/rtf-to-pdf` | POST | RTF → PDF |
+
+### Image Conversion
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/image/pdf-to-images` | POST | PDF → Images (PNG/JPG/WebP) |
+| `/api/v1/image/images-to-pdf` | POST | Images → PDF |
+
+### Batch Processing
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/batch/process` | POST | Batch process PDFs via ZIP |
+
+### Examples
 
 ```bash
+# Merge PDFs
 curl -X POST http://localhost:8000/api/v1/pdf/merge \
   -F "files=@doc1.pdf" -F "files=@doc2.pdf" \
   --output merged.pdf
+
+# Add password
+curl -X POST http://localhost:8000/api/v1/pdf/password/add \
+  -F "file=@doc.pdf" -F "password=secret123" \
+  --output protected.pdf
+
+# Convert URL to PDF
+curl -X POST http://localhost:8000/api/v1/convert/url-to-pdf \
+  -F "url=https://example.com" \
+  --output page.pdf
 ```
 
 ## Development
