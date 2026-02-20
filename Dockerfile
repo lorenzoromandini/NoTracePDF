@@ -19,6 +19,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     poppler-utils \
     libqpdf-dev \
+    # LibreOffice headless for Office conversions (Phase 3)
+    libreoffice-writer \
+    libreoffice-calc \
+    libreoffice-impress \
+    libreoffice-core-nogui \
+    # WeasyPrint dependencies (Phase 3)
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libgdk-pixbuf2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for security

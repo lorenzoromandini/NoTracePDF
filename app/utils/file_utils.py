@@ -22,7 +22,17 @@ ALLOWED_PDF_TYPES = {"application/pdf"}
 ALLOWED_IMAGE_TYPES = {
     "image/jpeg", "image/png", "image/gif", "image/webp", "image/bmp"
 }
-ALLOWED_ALL_TYPES = ALLOWED_PDF_TYPES | ALLOWED_IMAGE_TYPES
+ALLOWED_OFFICE_TYPES = {
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",  # docx
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",  # xlsx
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",  # pptx
+    "application/msword",  # doc (legacy)
+    "application/vnd.ms-excel",  # xls (legacy)
+    "application/vnd.ms-powerpoint",  # ppt (legacy)
+    "application/rtf",  # rtf
+    "text/rtf",  # rtf alternate
+}
+ALLOWED_ALL_TYPES = ALLOWED_PDF_TYPES | ALLOWED_IMAGE_TYPES | ALLOWED_OFFICE_TYPES
 
 
 class FileValidationError(HTTPException):
@@ -263,3 +273,184 @@ def validate_page_numbers(pages: List[int], total_pages: int) -> None:
             raise InvalidPageError(
                 f"Page {page} is out of range. PDF has {total_pages} pages."
             )
+
+
+async def validate_docx(file: UploadFile) -> BytesIO:
+    """
+    Validate Word document (.docx) and return as BytesIO.
+    
+    Args:
+        file: UploadFile from FastAPI
+        
+    Returns:
+        BytesIO: File content in memory
+        
+    Raises:
+        FileValidationError: If file is invalid
+    """
+    # Check content type or extension
+    valid_types = {
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/msword",
+    }
+    
+    filename = file.filename or ""
+    if file.content_type not in valid_types and not filename.lower().endswith(('.docx', '.doc')):
+        raise FileValidationError(
+            status_code=415,
+            detail=f"Invalid file type: {file.content_type}. Expected Word document."
+        )
+    
+    content = await file.read()
+    
+    # Check file size
+    if len(content) > settings.MAX_UPLOAD_SIZE_BYTES:
+        raise FileValidationError(
+            status_code=413,
+            detail=f"File too large. Maximum size is {settings.MAX_FILE_SIZE_MB}MB."
+        )
+    
+    if len(content) == 0:
+        raise FileValidationError(status_code=400, detail="Empty file provided.")
+    
+    # Check for Office file signature (ZIP format)
+    if not content.startswith(b'PK'):
+        raise FileValidationError(
+            status_code=400,
+            detail="Invalid Word document. File does not have expected format."
+        )
+    
+    return BytesIO(content)
+
+
+async def validate_xlsx(file: UploadFile) -> BytesIO:
+    """
+    Validate Excel spreadsheet (.xlsx) and return as BytesIO.
+    
+    Args:
+        file: UploadFile from FastAPI
+        
+    Returns:
+        BytesIO: File content in memory
+        
+    Raises:
+        FileValidationError: If file is invalid
+    """
+    valid_types = {
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel",
+    }
+    
+    filename = file.filename or ""
+    if file.content_type not in valid_types and not filename.lower().endswith(('.xlsx', '.xls')):
+        raise FileValidationError(
+            status_code=415,
+            detail=f"Invalid file type: {file.content_type}. Expected Excel spreadsheet."
+        )
+    
+    content = await file.read()
+    
+    if len(content) > settings.MAX_UPLOAD_SIZE_BYTES:
+        raise FileValidationError(
+            status_code=413,
+            detail=f"File too large. Maximum size is {settings.MAX_FILE_SIZE_MB}MB."
+        )
+    
+    if len(content) == 0:
+        raise FileValidationError(status_code=400, detail="Empty file provided.")
+    
+    if not content.startswith(b'PK'):
+        raise FileValidationError(
+            status_code=400,
+            detail="Invalid Excel file. File does not have expected format."
+        )
+    
+    return BytesIO(content)
+
+
+async def validate_pptx(file: UploadFile) -> BytesIO:
+    """
+    Validate PowerPoint presentation (.pptx) and return as BytesIO.
+    
+    Args:
+        file: UploadFile from FastAPI
+        
+    Returns:
+        BytesIO: File content in memory
+        
+    Raises:
+        FileValidationError: If file is invalid
+    """
+    valid_types = {
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.ms-powerpoint",
+    }
+    
+    filename = file.filename or ""
+    if file.content_type not in valid_types and not filename.lower().endswith(('.pptx', '.ppt')):
+        raise FileValidationError(
+            status_code=415,
+            detail=f"Invalid file type: {file.content_type}. Expected PowerPoint presentation."
+        )
+    
+    content = await file.read()
+    
+    if len(content) > settings.MAX_UPLOAD_SIZE_BYTES:
+        raise FileValidationError(
+            status_code=413,
+            detail=f"File too large. Maximum size is {settings.MAX_FILE_SIZE_MB}MB."
+        )
+    
+    if len(content) == 0:
+        raise FileValidationError(status_code=400, detail="Empty file provided.")
+    
+    if not content.startswith(b'PK'):
+        raise FileValidationError(
+            status_code=400,
+            detail="Invalid PowerPoint file. File does not have expected format."
+        )
+    
+    return BytesIO(content)
+
+
+async def validate_rtf(file: UploadFile) -> BytesIO:
+    """
+    Validate RTF document and return as BytesIO.
+    
+    Args:
+        file: UploadFile from FastAPI
+        
+    Returns:
+        BytesIO: File content in memory
+        
+    Raises:
+        FileValidationError: If file is invalid
+    """
+    valid_types = {"application/rtf", "text/rtf"}
+    
+    filename = file.filename or ""
+    if file.content_type not in valid_types and not filename.lower().endswith('.rtf'):
+        raise FileValidationError(
+            status_code=415,
+            detail=f"Invalid file type: {file.content_type}. Expected RTF document."
+        )
+    
+    content = await file.read()
+    
+    if len(content) > settings.MAX_UPLOAD_SIZE_BYTES:
+        raise FileValidationError(
+            status_code=413,
+            detail=f"File too large. Maximum size is {settings.MAX_FILE_SIZE_MB}MB."
+        )
+    
+    if len(content) == 0:
+        raise FileValidationError(status_code=400, detail="Empty file provided.")
+    
+    # RTF files start with {\rtf1
+    if not content.startswith(b'{\\rtf'):
+        raise FileValidationError(
+            status_code=400,
+            detail="Invalid RTF file. File does not have RTF header."
+        )
+    
+    return BytesIO(content)
