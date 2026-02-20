@@ -207,3 +207,202 @@ class ExtractPagesRequest(BaseModel):
         ...,
         description="Pages to extract as separate PDFs (1-indexed)"
     )
+
+
+# =====================================================
+# Phase 2: Extended PDF Operations (PDF-17 to PDF-24)
+# =====================================================
+
+# === Page Dimensions ===
+class PageDimensions(BaseModel):
+    """Page dimensions in points."""
+    width: float = Field(..., description="Page width in points")
+    height: float = Field(..., description="Page height in points")
+
+
+# === Crop Request ===
+class CropRequest(BaseModel):
+    """Request model for cropping PDF pages."""
+    left: float = Field(default=0, ge=0, description="Left margin in points")
+    right: float = Field(default=0, ge=0, description="Right margin in points")
+    top: float = Field(default=0, ge=0, description="Top margin in points")
+    bottom: float = Field(default=0, ge=0, description="Bottom margin in points")
+    pages: Union[str, List[int]] = Field(
+        default="all",
+        description="Pages to crop: 'all' or list of page numbers (1-indexed)"
+    )
+
+
+# === Scale Request ===
+class ScaleRequest(BaseModel):
+    """Request model for scaling PDF page content."""
+    scale: float = Field(..., gt=0, description="Scale factor (e.g., 0.5 = 50%, 2.0 = 200%)")
+    pages: Union[str, List[int]] = Field(
+        default="all",
+        description="Pages to scale: 'all' or list of page numbers (1-indexed)"
+    )
+
+    @field_validator('scale')
+    @classmethod
+    def validate_scale(cls, v):
+        """Validate scale is reasonable."""
+        if v <= 0:
+            raise ValueError("Scale must be positive")
+        if v > 10:
+            raise ValueError("Scale cannot exceed 10x (1000%)")
+        return v
+
+
+# === Resize Request ===
+class ResizeRequest(BaseModel):
+    """Request model for resizing PDF page canvas."""
+    width: float = Field(..., gt=0, description="New page width in points")
+    height: float = Field(..., gt=0, description="New page height in points")
+    pages: Union[str, List[int]] = Field(
+        default="all",
+        description="Pages to resize: 'all' or list of page numbers (1-indexed)"
+    )
+
+
+# === Page Number Position ===
+class PageNumberPosition(str, Enum):
+    """Position options for page numbers."""
+    BOTTOM_CENTER = "bottom-center"
+    BOTTOM_LEFT = "bottom-left"
+    BOTTOM_RIGHT = "bottom-right"
+    TOP_CENTER = "top-center"
+    TOP_LEFT = "top-left"
+    TOP_RIGHT = "top-right"
+
+
+# === Page Number Request ===
+class PageNumberRequest(BaseModel):
+    """Request model for adding page numbers."""
+    format: str = Field(
+        default="Page {page} of {total}",
+        description="Format string with {page} and {total} placeholders"
+    )
+    position: PageNumberPosition = Field(
+        default=PageNumberPosition.BOTTOM_CENTER,
+        description="Position for page numbers"
+    )
+    font_size: int = Field(default=12, ge=6, le=72, description="Font size in points")
+    color: str = Field(default="#000000", description="Hex color code")
+    start_at: int = Field(default=1, ge=1, description="Starting page number")
+    pages: Optional[List[int]] = Field(
+        default=None,
+        description="Pages to number (1-indexed), None for all pages"
+    )
+
+
+# === Flatten Request ===
+class FlattenRequest(BaseModel):
+    """Request model for flattening annotations."""
+    pass  # No additional parameters needed
+
+
+# === Metadata Field ===
+class MetadataField(str, Enum):
+    """Metadata field names."""
+    TITLE = "title"
+    AUTHOR = "author"
+    SUBJECT = "subject"
+    KEYWORDS = "keywords"
+    CREATOR = "creator"
+    PRODUCER = "producer"
+    CREATION_DATE = "creationDate"
+    MODIFICATION_DATE = "modDate"
+
+
+# === Remove Metadata Request ===
+class RemoveMetadataRequest(BaseModel):
+    """Request model for removing metadata."""
+    fields: Optional[List[str]] = Field(
+        default=None,
+        description="Metadata fields to remove. If None, removes all. "
+                    "Valid values: title, author, subject, keywords, creator, producer, creationDate, modDate"
+    )
+
+
+# === Compare Options ===
+class CompareOptions(BaseModel):
+    """Options for PDF comparison."""
+    highlight_add: str = Field(
+        default="#00FF00",
+        description="Hex color for additions (content in file2 not in file1)"
+    )
+    highlight_del: str = Field(
+        default="#FF0000",
+        description="Hex color for deletions (content in file1 not in file2)"
+    )
+    include_summary: bool = Field(
+        default=True,
+        description="Whether to include a summary page"
+    )
+    dpi: int = Field(
+        default=150,
+        ge=72,
+        le=300,
+        description="Rendering DPI for comparison"
+    )
+
+
+# === Compare Result ===
+class CompareResult(BaseModel):
+    """Statistics from PDF comparison."""
+    pages_original: int
+    pages_modified: int
+    pages_compared: int
+    pages_added: int
+    pages_removed: int
+    pages_changed: int
+
+
+# === Redact Pattern ===
+class RedactPattern(BaseModel):
+    """Pattern for redaction."""
+    text: str = Field(..., description="Text pattern to redact")
+    match_exact: bool = Field(default=False, description="Match exact text only")
+    case_sensitive: bool = Field(default=True, description="Case-sensitive matching")
+
+
+# === Redact Request ===
+class RedactRequest(BaseModel):
+    """Request model for redacting text."""
+    patterns: List[str] = Field(
+        ...,
+        min_length=1,
+        description="List of text patterns to redact"
+    )
+    match_exact: bool = Field(
+        default=False,
+        description="If True, match exact text only; if False, match substrings"
+    )
+    case_sensitive: bool = Field(
+        default=True,
+        description="Whether to match case"
+    )
+    fill_color: str = Field(
+        default="#000000",
+        description="Hex color for redaction fill"
+    )
+    border_color: Optional[str] = Field(
+        default=None,
+        description="Optional hex color for redaction border"
+    )
+    pages: Union[str, List[int]] = Field(
+        default="all",
+        description="Pages to redact: 'all' or list of page numbers (1-indexed)"
+    )
+
+
+# === Page Dimensions Response ===
+class PageDimensionsResponse(BaseModel):
+    """Response model for page dimensions."""
+    page: int
+    width: Optional[float] = None
+    height: Optional[float] = None
+    width_mm: Optional[float] = None
+    height_mm: Optional[float] = None
+    crop_width: Optional[float] = None
+    crop_height: Optional[float] = None

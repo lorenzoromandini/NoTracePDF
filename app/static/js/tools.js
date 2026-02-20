@@ -416,6 +416,290 @@ const TOOL_CONFIG = {
                 ]
             }
         ]
+    },
+
+    // =====================================================
+    // Phase 2: Extended PDF Operations
+    // =====================================================
+
+    'crop-pages': {
+        name: 'Crop Pages',
+        endpoint: '/api/v1/pdf/crop',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'left',
+                label: 'Left margin (points)',
+                type: 'number',
+                default: 0,
+                min: 0,
+                hint: '1 point = 1/72 inch'
+            },
+            {
+                key: 'right',
+                label: 'Right margin (points)',
+                type: 'number',
+                default: 0,
+                min: 0
+            },
+            {
+                key: 'top',
+                label: 'Top margin (points)',
+                type: 'number',
+                default: 0,
+                min: 0
+            },
+            {
+                key: 'bottom',
+                label: 'Bottom margin (points)',
+                type: 'number',
+                default: 0,
+                min: 0
+            },
+            {
+                key: 'pages',
+                label: 'Pages to crop (optional)',
+                type: 'text',
+                placeholder: 'e.g., 1, 3, 5-7',
+                hint: 'Leave empty for all pages'
+            }
+        ]
+    },
+
+    'scale-pages': {
+        name: 'Scale Content',
+        endpoint: '/api/v1/pdf/scale',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'scale',
+                label: 'Scale factor',
+                type: 'number',
+                default: 1.0,
+                min: 0.1,
+                max: 10,
+                step: 0.1,
+                hint: 'e.g., 0.5 = 50%, 2.0 = 200%'
+            },
+            {
+                key: 'pages',
+                label: 'Pages to scale (optional)',
+                type: 'text',
+                placeholder: 'e.g., 1, 3, 5-7',
+                hint: 'Leave empty for all pages'
+            }
+        ]
+    },
+
+    'resize-pages': {
+        name: 'Resize Pages',
+        endpoint: '/api/v1/pdf/resize',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'width',
+                label: 'Width (points)',
+                type: 'number',
+                default: 595.28,
+                min: 1,
+                hint: 'A4=595.28, Letter=612'
+            },
+            {
+                key: 'height',
+                label: 'Height (points)',
+                type: 'number',
+                default: 841.89,
+                min: 1,
+                hint: 'A4=841.89, Letter=792'
+            },
+            {
+                key: 'pages',
+                label: 'Pages to resize (optional)',
+                type: 'text',
+                placeholder: 'e.g., 1, 3, 5-7',
+                hint: 'Leave empty for all pages'
+            }
+        ]
+    },
+
+    'page-numbers': {
+        name: 'Add Page Numbers',
+        endpoint: '/api/v1/pdf/page-numbers',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'format',
+                label: 'Format',
+                type: 'text',
+                default: 'Page {page} of {total}',
+                hint: 'Use {page} and {total} placeholders'
+            },
+            {
+                key: 'position',
+                label: 'Position',
+                type: 'select',
+                default: 'bottom-center',
+                options: [
+                    { value: 'bottom-center', label: 'Bottom Center' },
+                    { value: 'bottom-left', label: 'Bottom Left' },
+                    { value: 'bottom-right', label: 'Bottom Right' },
+                    { value: 'top-center', label: 'Top Center' },
+                    { value: 'top-left', label: 'Top Left' },
+                    { value: 'top-right', label: 'Top Right' }
+                ]
+            },
+            {
+                key: 'font_size',
+                label: 'Font size',
+                type: 'number',
+                default: 12,
+                min: 6,
+                max: 72
+            },
+            {
+                key: 'color',
+                label: 'Color',
+                type: 'color',
+                default: '#000000'
+            },
+            {
+                key: 'start_at',
+                label: 'Start at page',
+                type: 'number',
+                default: 1,
+                min: 1
+            }
+        ]
+    },
+
+    'flatten': {
+        name: 'Flatten PDF',
+        endpoint: '/api/v1/pdf/flatten',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: null
+    },
+
+    'remove-metadata': {
+        name: 'Remove Metadata',
+        endpoint: '/api/v1/pdf/metadata/remove',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'fields',
+                label: 'Fields to remove',
+                type: 'checkbox',
+                options: [
+                    { value: 'title', label: 'Title' },
+                    { value: 'author', label: 'Author' },
+                    { value: 'subject', label: 'Subject' },
+                    { value: 'keywords', label: 'Keywords' },
+                    { value: 'creator', label: 'Creator' },
+                    { value: 'producer', label: 'Producer' },
+                    { value: 'creationDate', label: 'Creation Date' },
+                    { value: 'modDate', label: 'Modification Date' }
+                ]
+            }
+        ]
+    },
+
+    'compare': {
+        name: 'Compare PDFs',
+        endpoint: '/api/v1/pdf/compare',
+        multipleFiles: true,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'highlight_add',
+                label: 'Additions color',
+                type: 'color',
+                default: '#00FF00'
+            },
+            {
+                key: 'highlight_del',
+                label: 'Deletions color',
+                type: 'color',
+                default: '#FF0000'
+            },
+            {
+                key: 'include_summary',
+                label: 'Include summary page',
+                type: 'checkbox',
+                options: [
+                    { value: 'true', label: 'Yes' }
+                ]
+            },
+            {
+                key: 'dpi',
+                label: 'Comparison DPI',
+                type: 'select',
+                default: '150',
+                options: [
+                    { value: '72', label: '72 DPI (fast)' },
+                    { value: '150', label: '150 DPI (balanced)' },
+                    { value: '300', label: '300 DPI (accurate)' }
+                ]
+            }
+        ]
+    },
+
+    'redact': {
+        name: 'Redact Text',
+        endpoint: '/api/v1/pdf/redact',
+        multipleFiles: false,
+        accepts: ['.pdf'],
+        acceptMime: 'application/pdf',
+        options: [
+            {
+                key: 'patterns',
+                label: 'Text to redact',
+                type: 'text',
+                required: true,
+                placeholder: 'e.g., CONFIDENTIAL, SSN',
+                hint: 'Comma-separated text patterns'
+            },
+            {
+                key: 'match_exact',
+                label: 'Match exact text only',
+                type: 'checkbox',
+                options: [
+                    { value: 'true', label: 'Exact match only' }
+                ]
+            },
+            {
+                key: 'case_sensitive',
+                label: 'Case sensitive',
+                type: 'checkbox',
+                options: [
+                    { value: 'true', label: 'Case sensitive' }
+                ]
+            },
+            {
+                key: 'fill_color',
+                label: 'Fill color',
+                type: 'color',
+                default: '#000000'
+            },
+            {
+                key: 'pages',
+                label: 'Pages to redact (optional)',
+                type: 'text',
+                placeholder: 'e.g., 1, 3, 5-7',
+                hint: 'Leave empty for all pages'
+            }
+        ]
     }
 };
 
@@ -563,8 +847,17 @@ function collectFormData(toolId, files, optionsForm) {
     const config = TOOL_CONFIG[toolId];
     const formData = new FormData();
     
-    // Add files
-    if (config.multipleFiles) {
+    // Add files - special handling for compare tool
+    if (toolId === 'compare') {
+        // Compare needs two files: file1 and file2
+        if (files.length >= 2) {
+            formData.append('file1', files[0]);
+            formData.append('file2', files[1]);
+        } else {
+            // Error case handled elsewhere
+            formData.append('file1', files[0]);
+        }
+    } else if (config.multipleFiles) {
         for (const file of files) {
             formData.append('files', file);
         }
@@ -606,6 +899,12 @@ function collectFormData(toolId, files, optionsForm) {
                         const parsed = parsePageInput(input.value);
                         if (parsed) {
                             formData.append(option.key, JSON.stringify(parsed));
+                        }
+                    } else if (option.key === 'patterns') {
+                        // Special handling for redact patterns - parse comma-separated
+                        const patterns = input.value.split(',').map(s => s.trim()).filter(s => s);
+                        if (patterns.length > 0) {
+                            formData.append(option.key, JSON.stringify(patterns));
                         }
                     } else {
                         formData.append(option.key, input.value);
