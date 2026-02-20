@@ -10,14 +10,6 @@ Self-hosted, zero-trace, ephemeral PDF toolkit. Like iLovePDF, but nothing is ev
 - **No accounts**: No tracking, no sessions, no data collection
 - **Ephemeral**: Files deleted immediately after download
 
-## Use Cases
-
-- **Privacy-conscious individuals**: Process sensitive documents without cloud exposure
-- **Legal professionals**: Handle confidential documents securely
-- **Healthcare**: Process patient documents with privacy compliance
-- **Finance**: Handle financial documents without data retention
-- **Home labs**: Self-hosted PDF toolkit for personal use
-
 ## Quick Start
 
 ```bash
@@ -29,20 +21,23 @@ open http://localhost:8000
 
 ## Features (42 Tools)
 
-### Core PDF Operations
-Merge, Split, Rotate, Reorder, Delete pages, Compress, Password protect/remove, Text/Image watermark, Extract text/images/pages
+- **Organize**: Merge, Split, Rotate
+- **Compress**: Compress, Flatten, Remove metadata
+- **Convert to PDF**: Images, Word, Excel, PowerPoint, HTML, URL, Text, Markdown, RTF
+- **Convert from PDF**: Images, Word, Excel, PowerPoint
+- **Security**: Password protect/remove, Redact text
+- **Extract**: Text, Images, Pages, OCR
+- **Watermark & Page Numbers**: Add watermarks, page numbers
+- **Page Operations**: Crop, Scale, Resize
+- **Advanced**: Batch process, Compare PDFs
 
-### Image Conversion
-PDF → Images (PNG/JPG/WebP), Images → PDF
+### UI Features
 
-### Document Conversions
-PDF ↔ Word/Excel/PowerPoint, HTML → PDF, Markdown → PDF, URL → PDF, Text → PDF, RTF → PDF
-
-### Extended Operations
-Crop, Scale, Resize, Page numbers, Flatten annotations, Remove metadata, Compare PDFs, Redact text
-
-### Advanced
-OCR (Tesseract), Batch ZIP processing, Client-side fallback (<20MB), PDF preview, Dark mode, Responsive UI
+- Dark mode (default)
+- Live search bar
+- Responsive design
+- PDF preview
+- Client-side processing for small files (<20MB)
 
 ## Deployment
 
