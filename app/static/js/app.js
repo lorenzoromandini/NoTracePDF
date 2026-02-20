@@ -44,9 +44,55 @@ class NoTracePDFApp {
         
         // PDF Preview
         this.pdfPreview = new PDFPreview();
+        
+        // Theme toggle
+        this.themeToggle = document.getElementById('theme-toggle');
+        this.initTheme();
 
         // Initialize
         this.init();
+    }
+    
+    /**
+     * Initialize theme from localStorage
+     */
+    initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        this.updateThemeIcon(savedTheme);
+        
+        if (this.themeToggle) {
+            this.themeToggle.addEventListener('click', () => this.toggleTheme());
+        }
+    }
+    
+    /**
+     * Toggle between light and dark theme
+     */
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        this.updateThemeIcon(newTheme);
+    }
+    
+    /**
+     * Update theme toggle button icon
+     */
+    updateThemeIcon(theme) {
+        if (!this.themeToggle) return;
+        
+        const sunIcon = this.themeToggle.querySelector('.sun-icon');
+        const moonIcon = this.themeToggle.querySelector('.moon-icon');
+        
+        if (theme === 'dark') {
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        } else {
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
     }
 
     init() {
