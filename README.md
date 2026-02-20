@@ -55,17 +55,29 @@ open http://localhost:8000
 | Compare PDFs | ✅ | Visual diff highlighting between two PDFs |
 | Redact Text | ✅ | Permanently black out sensitive text |
 
-### Coming Soon (Phase 3-4)
+### Coming Soon (Phase 4)
 
-- PDF → Office (Word, Excel, PowerPoint)
-- Office files → PDF
-- HTML / Markdown / URL → PDF
-- Text / RTF → PDF
 - OCR on scanned PDFs
 - Batch processing via ZIP
 - Client-side fallback for small files
 - PDF preview
 - Dark mode
+
+### Document Conversions (Phase 3) - Complete ✓
+
+| Feature | Status | Description |
+|---------|--------|-------------|
+| PDF → Word | ✅ | Convert PDF to .docx |
+| PDF → Excel | ✅ | Convert PDF to .xlsx |
+| PDF → PowerPoint | ✅ | Convert PDF to .pptx |
+| Word → PDF | ✅ | Convert .docx to PDF |
+| Excel → PDF | ✅ | Convert .xlsx to PDF |
+| PowerPoint → PDF | ✅ | Convert .pptx to PDF |
+| HTML → PDF | ✅ | Convert HTML to PDF |
+| Markdown → PDF | ✅ | Convert Markdown to PDF |
+| URL → PDF | ✅ | Convert web page to PDF |
+| Text → PDF | ✅ | Convert plain text to PDF |
+| RTF → PDF | ✅ | Convert RTF to PDF |
 
 ## Architecture
 
@@ -274,6 +286,22 @@ pytest tests/test_zero_trace.py -v
 | `/api/v1/pdf/metadata/remove` | POST | Remove all metadata |
 | `/api/v1/pdf/compare` | POST | Compare two PDFs with diff highlighting |
 | `/api/v1/pdf/redact` | POST | Permanently redact text |
+
+### Document Conversions
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/convert/pdf-to-word` | POST | Convert PDF to Word (.docx) |
+| `/api/v1/convert/pdf-to-excel` | POST | Convert PDF to Excel (.xlsx) |
+| `/api/v1/convert/pdf-to-ppt` | POST | Convert PDF to PowerPoint (.pptx) |
+| `/api/v1/convert/word-to-pdf` | POST | Convert Word to PDF |
+| `/api/v1/convert/excel-to-pdf` | POST | Convert Excel to PDF |
+| `/api/v1/convert/ppt-to-pdf` | POST | Convert PowerPoint to PDF |
+| `/api/v1/convert/html-to-pdf` | POST | Convert HTML to PDF |
+| `/api/v1/convert/markdown-to-pdf` | POST | Convert Markdown to PDF |
+| `/api/v1/convert/url-to-pdf` | POST | Convert URL to PDF |
+| `/api/v1/convert/text-to-pdf` | POST | Convert plain text to PDF |
+| `/api/v1/convert/rtf-to-pdf` | POST | Convert RTF to PDF |
 
 ### Image Conversion
 

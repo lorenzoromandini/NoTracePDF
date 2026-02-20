@@ -77,17 +77,17 @@
 
 ### Document Conversion
 
-- [ ] **CONV-01**: User can convert PDF to Word (.docx)
-- [ ] **CONV-02**: User can convert PDF to Excel (.xlsx)
-- [ ] **CONV-03**: User can convert PDF to PowerPoint (.pptx)
-- [ ] **CONV-04**: User can convert Word (.docx) to PDF
-- [ ] **CONV-05**: User can convert Excel (.xlsx) to PDF
-- [ ] **CONV-06**: User can convert PowerPoint (.pptx) to PDF
-- [ ] **CONV-07**: User can convert HTML to PDF
-- [ ] **CONV-08**: User can convert Markdown to PDF
-- [ ] **CONV-09**: User can convert URL (web page) to PDF
-- [ ] **CONV-10**: User can convert plain text to PDF
-- [ ] **CONV-11**: User can convert RTF to PDF
+- [x] **CONV-01**: User can convert PDF to Word (.docx)
+- [x] **CONV-02**: User can convert PDF to Excel (.xlsx)
+- [x] **CONV-03**: User can convert PDF to PowerPoint (.pptx)
+- [x] **CONV-04**: User can convert Word (.docx) to PDF
+- [x] **CONV-05**: User can convert Excel (.xlsx) to PDF
+- [x] **CONV-06**: User can convert PowerPoint (.pptx) to PDF
+- [x] **CONV-07**: User can convert HTML to PDF
+- [x] **CONV-08**: User can convert Markdown to PDF
+- [x] **CONV-09**: User can convert URL (web page) to PDF
+- [x] **CONV-10**: User can convert plain text to PDF
+- [x] **CONV-11**: User can convert RTF to PDF
 
 ## Tier 2 Requirements (Future)
 
@@ -170,17 +170,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PDF-22 | Phase 2 | Complete |
 | PDF-23 | Phase 2 | Complete |
 | PDF-24 | Phase 2 | Complete |
-| CONV-01 | Phase 3 | Pending |
-| CONV-02 | Phase 3 | Pending |
-| CONV-03 | Phase 3 | Pending |
-| CONV-04 | Phase 3 | Pending |
-| CONV-05 | Phase 3 | Pending |
-| CONV-06 | Phase 3 | Pending |
-| CONV-07 | Phase 3 | Pending |
-| CONV-08 | Phase 3 | Pending |
-| CONV-09 | Phase 3 | Pending |
-| CONV-10 | Phase 3 | Pending |
-| CONV-11 | Phase 3 | Pending |
+| CONV-01 | Phase 3 | Complete |
+| CONV-02 | Phase 3 | Complete |
+| CONV-03 | Phase 3 | Complete |
+| CONV-04 | Phase 3 | Complete |
+| CONV-05 | Phase 3 | Complete |
+| CONV-06 | Phase 3 | Complete |
+| CONV-07 | Phase 3 | Complete |
+| CONV-08 | Phase 3 | Complete |
+| CONV-09 | Phase 3 | Complete |
+| CONV-10 | Phase 3 | Complete |
+| CONV-11 | Phase 3 | Complete |
 | ADV-01 | Phase 4 | Pending |
 | ADV-02 | Phase 4 | Pending |
 | ADV-03 | Phase 4 | Pending |

@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: MVP Foundation** - Complete zero-trace PDF toolkit with 9 core tools, UI, and Docker deployment
 - [x] **Phase 2: Extended PDF Operations** - Crop, scale, page numbers, metadata removal, comparison, redaction
-- [ ] **Phase 3: Document Conversions** - PDF ↔ Office formats, HTML/Markdown/URL → PDF
+- [x] **Phase 3: Document Conversions** - PDF ↔ Office formats, HTML/Markdown/URL → PDF
 - [ ] **Phase 4: Advanced Features** - OCR, batch processing, client-side fallback, PDF preview, dark mode
 
 ## Phase Details
@@ -73,9 +73,9 @@ Plans:
 **Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 03-01-PLAN.md — Office ↔ PDF conversions with LibreOffice headless (CONV-01 to CONV-06)
-- [ ] 03-02-PLAN.md — HTML/Markdown/URL → PDF with WeasyPrint (CONV-07 to CONV-09)
-- [ ] 03-03-PLAN.md — Text/RTF → PDF conversions (CONV-10, CONV-11)
+- [x] 03-01-PLAN.md — Office ↔ PDF conversions with LibreOffice headless (CONV-01 to CONV-06)
+- [x] 03-02-PLAN.md — HTML/Markdown/URL → PDF with WeasyPrint (CONV-07 to CONV-09)
+- [x] 03-03-PLAN.md — Text/RTF → PDF conversions (CONV-10, CONV-11)
 
 ### Phase 4: Advanced Features
 **Goal**: Users have enterprise-grade capabilities while maintaining privacy-first architecture
@@ -98,7 +98,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. MVP Foundation | 8/8 | Complete | 01-01, 01-02, 01-03, 01-04, 01-05, 01-06, 01-07, 01-08 |
 | 2. Extended PDF Operations | 4/4 | Complete | 02-01, 02-02, 02-03, 02-04 |
-| 3. Document Conversions | 0/3 | Not started | - |
+| 3. Document Conversions | 3/3 | Complete | 03-01, 03-02, 03-03 |
 | 4. Advanced Features | 0/TBD | Not started | - |
 
 ---

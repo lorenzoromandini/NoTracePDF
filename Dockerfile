@@ -15,19 +15,21 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # Install system dependencies
+# - poppler-utils: PDF to image conversion
+# - libqpdf-dev: pikepdf dependency
+# - LibreOffice: Office document conversions
+# - Pango/GDK: WeasyPrint dependencies for HTML to PDF
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     poppler-utils \
     libqpdf-dev \
-    # LibreOffice headless for Office conversions (Phase 3)
-    libreoffice-writer \
-    libreoffice-calc \
-    libreoffice-impress \
-    libreoffice-core-nogui \
-    # WeasyPrint dependencies (Phase 3)
+    libreoffice-writer-nogui \
+    libreoffice-calc-nogui \
+    libreoffice-impress-nogui \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
-    libgdk-pixbuf2.0-0 \
+    libgdk-pixbuf-2.0-0 \
+    shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for security
@@ -61,13 +63,12 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Run with gunicorn + uvicorn workers
-# Timeout: 30s to prevent slow upload DoS
-# Graceful timeout: 10s for clean shutdown
+# Timeout increased to 120s for Office conversions
 ENTRYPOINT ["gunicorn", "app.main:app", \
     "-w", "2", \
     "-k", "uvicorn.workers.UvicornWorker", \
     "-b", "0.0.0.0:8000", \
-    "--timeout", "30", \
-    "--graceful-timeout", "10", \
+    "--timeout", "120", \
+    "--graceful-timeout", "30", \
     "--access-logfile", "-", \
     "--error-logfile", "-"]
