@@ -1,0 +1,26 @@
+# Caddyfile for NoTracePDF
+# Replace YOUR_DOMAIN with your actual domain name
+
+# HTTP to HTTPS redirect (uncomment after setting domain)
+http_port 80
+https_port 443
+
+# Your domain - change this!
+notracepdf.example.com {
+    reverse_proxy notracepdf:8000
+    
+    # Security headers
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Cache-Control "no-store, no-cache, must-revalidate"
+        -Server
+    }
+    
+    # Enable compression
+    encode gzip
+    
+    # Optional: Let's Encrypt email for certificate notifications
+    email your-email@example.com
+}
