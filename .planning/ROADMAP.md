@@ -70,7 +70,12 @@ Plans:
   3. User can convert Markdown documents to PDF
   4. User can convert plain text and RTF files to PDF
   5. All conversions maintain zero-trace guarantee (in-memory processing, no persistence)
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
+
+Plans:
+- [ ] 03-01-PLAN.md — Office ↔ PDF conversions with LibreOffice headless (CONV-01 to CONV-06)
+- [ ] 03-02-PLAN.md — HTML/Markdown/URL → PDF with WeasyPrint (CONV-07 to CONV-09)
+- [ ] 03-03-PLAN.md — Text/RTF → PDF conversions (CONV-10, CONV-11)
 
 ### Phase 4: Advanced Features
 **Goal**: Users have enterprise-grade capabilities while maintaining privacy-first architecture
@@ -93,11 +98,11 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. MVP Foundation | 8/8 | Complete | 01-01, 01-02, 01-03, 01-04, 01-05, 01-06, 01-07, 01-08 |
 | 2. Extended PDF Operations | 4/4 | Complete | 02-01, 02-02, 02-03, 02-04 |
-| 3. Document Conversions | 0/TBD | Not started | - |
+| 3. Document Conversions | 0/3 | Not started | - |
 | 4. Advanced Features | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-19*
 *Depth: comprehensive*
 *Coverage: 69/69 requirements mapped*
-*Last updated: 2026-02-20 after Phase 2 execution*
+*Last updated: 2026-02-20 after Phase 3 planning*
