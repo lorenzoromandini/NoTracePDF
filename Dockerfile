@@ -4,9 +4,9 @@
 # Key privacy features:
 # - NO VOLUME instruction (zero persistent storage)
 # - Runs as non-root user
-# - Minimal Alpine base for smallest attack surface
+# - Debian slim for better pre-built wheel support
 
-FROM python:3.12-alpine
+FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -15,16 +15,15 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # Install system dependencies
-# - poppler-utils: required by pdf2image for PDF to image conversion
-# - qpdf-libs: required by pikepdf for PDF manipulation
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     poppler-utils \
-    qpdf-libs
+    libqpdf-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for security
-RUN addgroup -S appgroup && \
-    adduser -S appuser -G appgroup
+RUN addgroup --system appgroup && \
+    adduser --system --group appuser
 
 # Set working directory
 WORKDIR /app
