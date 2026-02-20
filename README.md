@@ -7,8 +7,12 @@ Like iLovePDF or PDF24Tools, but nothing is ever saved, logged, or traced — fi
 ## Quick Start
 
 ```bash
-# Clone and run with Docker Compose
-docker-compose up -d
+# Clone the repository
+git clone https://github.com/yourusername/NoTracePDF.git
+cd NoTracePDF
+
+# Start with Docker Compose
+docker compose up -d
 
 # Access the application
 open http://localhost:8000
@@ -16,57 +20,118 @@ open http://localhost:8000
 
 ## Features
 
-### MVP (Phase 1) - Complete
-- [x] Merge multiple PDFs
-- [x] Split PDF (by page range, every N pages, extract specific pages)
-- [x] Rotate pages / reorder / delete pages
-- [x] Compress PDF (with quality presets + image optimization)
-- [x] Add / remove password & set permissions
-- [x] Add text/image watermark or stamp
-- [x] Extract text / images / pages from PDF
-- [x] PDF ↔ Images (PNG, JPG, WEBP)
-- [x] Images → PDF
-- [x] Web UI with drag-and-drop, progress tracking
-- [x] Zero-trace architecture verified
+### MVP (Phase 1) - Complete ✓
 
-### Tier 1 (Phase 2-3)
-- [ ] Crop / scale / resize pages
-- [ ] Add page numbers
-- [ ] Flatten annotations / remove metadata
-- [ ] Compare two PDFs (diff highlighting)
-- [ ] Redact sensitive text
-- [ ] PDF ↔ Office (Word, Excel, PowerPoint)
-- [ ] HTML / Markdown / URL → PDF
-- [ ] Text / RTF → PDF
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Merge PDFs | ✅ | Combine multiple PDFs into one |
+| Split PDF | ✅ | By page range, every N pages, or extract specific pages |
+| Rotate Pages | ✅ | Rotate single or all pages |
+| Reorder Pages | ✅ | Drag and drop page reordering |
+| Delete Pages | ✅ | Remove unwanted pages |
+| Compress PDF | ✅ | Quality presets (low/medium/high) with image optimization |
+| Password Protect | ✅ | AES-256 encryption with permissions |
+| Remove Password | ✅ | Unlock protected PDFs |
+| Text Watermark | ✅ | Add text watermarks with positioning |
+| Image Watermark | ✅ | Add image watermarks with positioning |
+| Extract Text | ✅ | Extract text content from PDF |
+| Extract Images | ✅ | Extract embedded images |
+| Extract Pages | ✅ | Export pages as separate PDFs |
+| PDF to Images | ✅ | Convert to PNG, JPG, or WebP |
+| Images to PDF | ✅ | Create PDF from multiple images |
+| Web UI | ✅ | Modern drag-and-drop interface |
+| Zero-Trace | ✅ | Verified privacy architecture |
 
-### Tier 2 (Phase 4)
-- [ ] OCR on scanned PDFs (Tesseract)
-- [ ] Batch processing via ZIP
-- [ ] Client-side fallback for small files (<20MB)
-- [ ] PDF preview
-- [ ] Dark mode + responsive mobile UI
+### Coming Soon (Phase 2-4)
+
+- Crop / scale / resize pages
+- Add page numbers
+- Flatten annotations / remove metadata
+- Compare two PDFs (diff highlighting)
+- Redact sensitive text
+- PDF ↔ Office (Word, Excel, PowerPoint)
+- HTML / Markdown / URL → PDF
+- OCR on scanned PDFs
+- Batch processing via ZIP
+- Client-side fallback for small files
+- Dark mode
 
 ## Architecture
 
 ### Zero-Trace Guarantee
 
-Every component is designed for privacy:
+Every component is designed for privacy from the ground up:
 
-1. **In-Memory Processing**: All PDF operations use `BytesIO` streams — no user data touches disk
-2. **tmpfs Mounts**: `/tmp` and `/app/uploads` are RAM-backed, ephemeral filesystems
-3. **No Persistent Volumes**: Docker container has zero persistent storage
-4. **Privacy Logging**: Middleware logs only method/path/status — never filenames, IPs, or file sizes
-5. **Cache Headers**: All responses include `Cache-Control: no-store, no-cache, must-revalidate, private`
+| Layer | Implementation | Purpose |
+|-------|---------------|---------|
+| **Processing** | BytesIO streams | All PDF operations happen in memory |
+| **Storage** | tmpfs mounts | `/tmp` and `/app/uploads` are RAM-backed |
+| **Docker** | No volumes | Container has zero persistent storage |
+| **Logging** | Privacy middleware | Logs only method/path/status, never user data |
+| **Browser** | Cache-Control headers | Prevents browser caching of downloads |
 
 ### Technology Stack
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| Backend | FastAPI + Python 3.12 | Async web framework |
-| PDF Processing | pikepdf + PyMuPDF | PDF manipulation and extraction |
-| Image Processing | Pillow + pdf2image | Image conversion |
-| Deployment | Docker + tmpfs | Zero-persistence container |
-| Frontend | Vanilla JS + CSS | Minimal footprint, no external dependencies |
+```
+┌─────────────────────────────────────────────────────┐
+│                    Frontend                         │
+│  Vanilla JS + CSS (no frameworks, no dependencies) │
+└─────────────────────┬───────────────────────────────┘
+                      │ HTTP/SSE
+┌─────────────────────▼───────────────────────────────┐
+│                 FastAPI Backend                     │
+│  Python 3.12 + Uvicorn + Gunicorn                  │
+├─────────────────────────────────────────────────────┤
+│  PDF Engine     │  pikepdf (qpdf) + PyMuPDF        │
+│  Image Engine   │  Pillow + pdf2image              │
+│  Security       │  AES-256 encryption              │
+└─────────────────────┬───────────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────────┐
+│                 Docker Runtime                      │
+│  Debian Slim + tmpfs (no persistent volumes)       │
+└─────────────────────────────────────────────────────┘
+```
+
+## Project Structure
+
+```
+NoTracePDF/
+├── app/
+│   ├── main.py                 # FastAPI application entry
+│   ├── core/
+│   │   └── config.py           # Settings and configuration
+│   ├── middleware/
+│   │   ├── privacy_logging.py  # Strips user data from logs
+│   │   └── cache_headers.py    # Adds no-store headers
+│   ├── services/
+│   │   ├── pdf_service.py      # Merge, split, rotate, reorder
+│   │   ├── pdf_security_service.py  # Compress, encrypt
+│   │   ├── pdf_watermark_service.py # Watermarks
+│   │   ├── pdf_extract_service.py   # Extract text/images/pages
+│   │   └── image_service.py    # PDF↔image conversion
+│   ├── api/v1/
+│   │   ├── pdf.py              # PDF endpoints
+│   │   └── image.py            # Image conversion endpoints
+│   ├── schemas/
+│   │   ├── pdf.py              # PDF request/response models
+│   │   └── image.py            # Image conversion models
+│   └── static/
+│       ├── index.html          # Web UI
+│       ├── css/styles.css      # Styles
+│       └── js/                 # Frontend JavaScript
+├── tests/
+│   ├── test_zero_trace.py      # Privacy verification
+│   ├── test_security.py        # Security tests
+│   ├── test_api.py             # API tests
+│   └── test_integration.py     # End-to-end tests
+├── scripts/
+│   └── verify_deployment.sh    # Deployment verification
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
+```
 
 ## Configuration
 
@@ -85,7 +150,7 @@ Environment variables (see `.env.example`):
 ### Docker Compose (Recommended)
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Docker Run
@@ -103,7 +168,23 @@ docker run -d \
 
 ### Verify Deployment
 
-Run the deployment verification script:
+```bash
+# Check container is running
+docker ps
+
+# Verify tmpfs mounts
+docker exec notracepdf mount | grep tmpfs
+
+# Check health endpoint
+curl http://localhost:8000/health
+# Expected: {"status":"ok","app":"NoTracePDF"}
+
+# Verify cache headers
+curl -I http://localhost:8000/health | grep Cache-Control
+# Expected: Cache-Control: no-store, no-cache, must-revalidate, private
+```
+
+### Run Verification Script
 
 ```bash
 ./scripts/verify_deployment.sh
@@ -141,14 +222,17 @@ pytest tests/ -v
 
 # Run with coverage
 pytest tests/ --cov=app --cov-report=term
+
+# Run specific test category
+pytest tests/test_zero_trace.py -v
 ```
 
 ### Test Categories
 
 | Test File | Tests | Purpose |
 |-----------|-------|---------|
-| `test_zero_trace.py` | 11 | Verify no file persistence, tmpfs config, no volumes |
-| `test_security.py` | 17 | Cache headers, logging privacy, file size limits |
+| `test_zero_trace.py` | 11 | Verify no file persistence, tmpfs config |
+| `test_security.py` | 17 | Cache headers, logging privacy, limits |
 | `test_api.py` | 14 | API endpoint functionality |
 | `test_integration.py` | 12 | End-to-end workflow tests |
 
@@ -176,18 +260,40 @@ pytest tests/ --cov=app --cov-report=term
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/v1/image/pdf-to-images` | POST | Convert PDF to images |
+| `/api/v1/image/pdf-to-images` | POST | Convert PDF to images (PNG/JPG/WebP) |
 | `/api/v1/image/images-to-pdf` | POST | Convert images to PDF |
+
+### Example: Merge PDFs
+
+```bash
+curl -X POST http://localhost:8000/api/v1/pdf/merge \
+  -F "files=@document1.pdf" \
+  -F "files=@document2.pdf" \
+  --output merged.pdf
+```
+
+### Example: Add Password
+
+```bash
+curl -X POST http://localhost:8000/api/v1/pdf/password/add \
+  -F "file=@document.pdf" \
+  -F "password=secret123" \
+  -F "permissions=print,copy" \
+  --output protected.pdf
+```
 
 ## Security
 
-- Container runs as non-root user
-- No persistent Docker volumes
-- tmpfs mounts for all temporary storage (RAM-backed)
-- Memory limits prevent resource exhaustion
-- Request timeouts prevent DoS attacks
-- No user data logged (filenames, IPs, file sizes)
-- AES-256 encryption for password protection
+| Feature | Implementation |
+|---------|---------------|
+| Non-root container | Runs as `appuser` |
+| No persistent storage | Zero Docker volumes |
+| RAM-only temp storage | tmpfs for `/tmp` and `/app/uploads` |
+| Memory limits | 1GB container limit |
+| Request timeouts | 30s timeout prevents DoS |
+| Privacy logging | No filenames, IPs, or file sizes logged |
+| Browser privacy | Cache-Control: no-store headers |
+| Encryption | AES-256 for password protection |
 
 ## Philosophy
 
@@ -197,9 +303,25 @@ pytest tests/ --cov=app --cov-report=term
 - **No accounts**: No tracking, no sessions, no data collection
 - **Ephemeral**: Files deleted immediately after download
 
+## Use Cases
+
+- **Privacy-conscious individuals**: Process sensitive documents without cloud exposure
+- **Legal professionals**: Handle confidential documents securely
+- **Healthcare**: Process patient documents with HIPAA compliance
+- **Finance**: Handle financial documents without data retention
+- **Home labs**: Self-hosted PDF toolkit for personal use
+
 ## License
 
 MIT License - See [LICENSE](LICENSE)
+
+## Contributing
+
+Contributions are welcome! Please ensure any contributions maintain the zero-trace architecture:
+
+1. All file operations must use in-memory processing
+2. No persistent storage or logging of user data
+3. All responses must include appropriate cache headers
 
 ---
 
