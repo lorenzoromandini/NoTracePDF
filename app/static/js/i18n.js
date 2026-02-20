@@ -297,6 +297,10 @@ class I18n {
         const langLabel = document.querySelector('.lang-label');
         if (langLabel) langLabel.textContent = this.currentLang.toUpperCase();
         
+        // Update flag
+        const langFlag = document.querySelector('.lang-flag');
+        if (langFlag) langFlag.textContent = this.currentLang === 'it' ? '🇮🇹' : '🇬🇧';
+        
         // Update all tool cards
         document.querySelectorAll('.tool-card').forEach(card => {
             const toolId = card.dataset.tool;
@@ -307,15 +311,9 @@ class I18n {
                 const title = this.getToolTranslation(toolId, 'title');
                 const desc = this.getToolTranslation(toolId, 'desc');
                 
-                if (this.currentLang === 'en' && title) {
+                if (title && desc) {
                     titleEl.textContent = title;
                     descEl.textContent = desc;
-                } else if (this.currentLang === 'it') {
-                    // Check for Italian data attributes first
-                    const itTitle = card.dataset.titleIt;
-                    const itDesc = card.dataset.descIt;
-                    if (itTitle) titleEl.textContent = itTitle;
-                    if (itDesc) descEl.textContent = itDesc;
                 }
             }
         });

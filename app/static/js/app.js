@@ -155,12 +155,12 @@ class NoTracePDFApp {
                 
                 if (window.i18n) {
                     const toolKey = card.dataset.tool;
-                    const trans = window.i18n.translations['en'][window.i18n.toolKeyMap[toolKey]];
+                    const trans = translations['en'][toolKeyMap[toolKey]];
                     if (trans) {
                         titleEn = trans.title.toLowerCase();
                         descEn = trans.desc.toLowerCase();
                     }
-                    const transIt = window.i18n.translations['it'][window.i18n.toolKeyMap[toolKey]];
+                    const transIt = translations['it'][toolKeyMap[toolKey]];
                     if (transIt) {
                         titleIt = transIt.title.toLowerCase();
                         descIt = transIt.desc.toLowerCase();
@@ -757,8 +757,17 @@ class NoTracePDFApp {
     }
 }
 
+// Global theme toggle function for inline onclick
+function toggleTheme() {
+    if (window.app) {
+        window.app.toggleTheme();
+    }
+}
+
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('NoTracePDF app initializing...');
     window.app = new NoTracePDFApp();
+    console.log('NoTracePDF app initialized:', window.app);
 });

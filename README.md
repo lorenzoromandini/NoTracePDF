@@ -189,3 +189,13 @@ MIT License
 ---
 
 *Built for privacy-conscious individuals and teams.*
+
+---
+
+<p align="center">
+  <a href="https://opencode.ai">
+    <img src="https://opencode.ai/favicon.ico" width="24" height="24" alt="OpenCode">
+  </a>
+  <br>
+  <sub>Built with <a href="https://opencode.ai">OpenCode</a></sub>
+</p>
