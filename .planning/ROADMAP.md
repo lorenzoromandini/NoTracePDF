@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: MVP Foundation** - Complete zero-trace PDF toolkit with 9 core tools, UI, and Docker deployment
 - [x] **Phase 2: Extended PDF Operations** - Crop, scale, page numbers, metadata removal, comparison, redaction
 - [x] **Phase 3: Document Conversions** - PDF ↔ Office formats, HTML/Markdown/URL → PDF
-- [ ] **Phase 4: Advanced Features** - OCR, batch processing, client-side fallback, PDF preview, dark mode
+- [x] **Phase 4: Advanced Features** - OCR, batch processing, client-side fallback, PDF preview, dark mode
 
 ## Phase Details
 
@@ -90,11 +90,11 @@ Plans:
 **Plans**: 5 plans in 1 wave
 
 Plans:
-- [ ] 04-01-PLAN.md — OCR text extraction from scanned PDFs using Tesseract (ADV-01)
-- [ ] 04-02-PLAN.md — Batch processing via ZIP upload/download (ADV-02)
-- [ ] 04-03-PLAN.md — Client-side fallback for merge/split/rotate on files <20MB (ADV-03)
-- [ ] 04-04-PLAN.md — PDF preview using PDF.js (ADV-04)
-- [ ] 04-05-PLAN.md — Dark mode and responsive mobile-first UI (ADV-05, ADV-06)
+- [x] 04-01-PLAN.md — OCR text extraction from scanned PDFs using Tesseract (ADV-01)
+- [x] 04-02-PLAN.md — Batch processing via ZIP upload/download (ADV-02)
+- [x] 04-03-PLAN.md — Client-side fallback for merge/split/rotate on files <20MB (ADV-03)
+- [x] 04-04-PLAN.md — PDF preview using PDF.js (ADV-04)
+- [x] 04-05-PLAN.md — Dark mode and responsive mobile-first UI (ADV-05, ADV-06)
 
 ## Progress
 
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. MVP Foundation | 8/8 | Complete | 01-01, 01-02, 01-03, 01-04, 01-05, 01-06, 01-07, 01-08 |
 | 2. Extended PDF Operations | 4/4 | Complete | 02-01, 02-02, 02-03, 02-04 |
 | 3. Document Conversions | 3/3 | Complete | 03-01, 03-02, 03-03 |
-| 4. Advanced Features | 0/5 | Planned | - |
+| 4. Advanced Features | 5/5 | Complete | 04-01, 04-02, 04-03, 04-04, 04-05 |
 
 ---
 *Roadmap created: 2026-02-19*

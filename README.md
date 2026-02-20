@@ -55,13 +55,16 @@ open http://localhost:8000
 | Compare PDFs | ✅ | Visual diff highlighting between two PDFs |
 | Redact Text | ✅ | Permanently black out sensitive text |
 
-### Coming Soon (Phase 4)
+### Advanced (Phase 4) - Complete ✓
 
-- OCR on scanned PDFs
-- Batch processing via ZIP
-- Client-side fallback for small files
-- PDF preview
-- Dark mode
+| Feature | Status | Description |
+|---------|--------|-------------|
+| OCR | ✅ | Extract text from scanned PDFs (Tesseract) |
+| Batch Processing | ✅ | Process multiple files via ZIP upload/download |
+| Client-Side Fallback | ✅ | Browser-only processing for files <20MB |
+| PDF Preview | ✅ | Preview pages before processing |
+| Dark Mode | ✅ | Toggle between light and dark themes |
+| Responsive UI | ✅ | Mobile-first design for all screen sizes |
 
 ### Document Conversions (Phase 3) - Complete ✓
 
@@ -302,6 +305,13 @@ pytest tests/test_zero_trace.py -v
 | `/api/v1/convert/url-to-pdf` | POST | Convert URL to PDF |
 | `/api/v1/convert/text-to-pdf` | POST | Convert plain text to PDF |
 | `/api/v1/convert/rtf-to-pdf` | POST | Convert RTF to PDF |
+
+### Advanced Operations
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/pdf/ocr` | POST | Extract text from scanned PDFs via OCR |
+| `/api/v1/batch/process` | POST | Batch process multiple PDFs via ZIP |
 
 ### Image Conversion
 

@@ -93,12 +93,12 @@
 
 ### Advanced Features
 
-- [ ] **ADV-01**: User can perform OCR on scanned PDFs (Tesseract)
-- [ ] **ADV-02**: User can batch process files via ZIP upload/download
-- [ ] **ADV-03**: Client-side fallback for merge/split/rotate on files < 20MB (zero server load)
-- [ ] **ADV-04**: User can preview uploaded PDFs (PDF.js rendering)
-- [ ] **ADV-05**: Dark mode UI theme
-- [ ] **ADV-06**: Fully responsive mobile-first UI design
+- [x] **ADV-01**: User can perform OCR on scanned PDFs (Tesseract)
+- [x] **ADV-02**: User can batch process files via ZIP upload/download
+- [x] **ADV-03**: Client-side fallback for merge/split/rotate on files < 20MB (zero server load)
+- [x] **ADV-04**: User can preview uploaded PDFs (PDF.js rendering)
+- [x] **ADV-05**: Dark mode UI theme
+- [x] **ADV-06**: Fully responsive mobile-first UI design
 
 ## Out of Scope
 
@@ -181,12 +181,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONV-09 | Phase 3 | Complete |
 | CONV-10 | Phase 3 | Complete |
 | CONV-11 | Phase 3 | Complete |
-| ADV-01 | Phase 4 | Pending |
-| ADV-02 | Phase 4 | Pending |
-| ADV-03 | Phase 4 | Pending |
-| ADV-04 | Phase 4 | Pending |
-| ADV-05 | Phase 4 | Pending |
-| ADV-06 | Phase 4 | Pending |
+| ADV-01 | Phase 4 | Complete |
+| ADV-02 | Phase 4 | Complete |
+| ADV-03 | Phase 4 | Complete |
+| ADV-04 | Phase 4 | Complete |
+| ADV-05 | Phase 4 | Complete |
+| ADV-06 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 44 total
@@ -197,4 +197,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-19*
-*Last updated: 2026-02-19 after Plan 01-07 completion (Web UI)*
+*Last updated: 2026-02-20 after Phase 4 completion (All features complete)*
