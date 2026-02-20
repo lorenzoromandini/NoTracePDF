@@ -15,7 +15,7 @@
     <!-- PDF.js for preview -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
-<body>
+<body data-theme="dark">
     <header class="header">
         <div class="header-content">
             <h1 class="logo">
@@ -51,452 +51,483 @@
         <!-- Tool Selection Grid -->
         <section id="tool-selection" class="tool-selection">
             <h2 class="section-title">Choose a Tool</h2>
-            <div class="tool-grid">
-                <!-- Merge PDF -->
-                <div class="tool-card" data-tool="merge" data-endpoint="/api/v1/pdf/merge" data-multiple="true">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="3" width="7" height="9" rx="1"></rect>
-                            <rect x="15" y="3" width="7" height="9" rx="1"></rect>
-                            <path d="M8 21h8"></path>
-                            <path d="M12 12v9"></path>
-                        </svg>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="M21 21l-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="tool-search" class="search-input" placeholder="Search tools..." autocomplete="off">
+                <button id="search-clear" class="search-clear hidden" aria-label="Clear search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <p id="search-results-count" class="search-results-count hidden"></p>
+            
+            <!-- Organize & Modify (Most Used) -->
+            <div class="tool-section" data-section="organize">
+                <h3 class="tool-section-title">Organize & Modify</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="merge" data-endpoint="/api/v1/pdf/merge" data-multiple="true">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="7" height="9" rx="1"></rect>
+                                <rect x="15" y="3" width="7" height="9" rx="1"></rect>
+                                <path d="M8 21h8"></path>
+                                <path d="M12 12v9"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Merge PDF</h3>
+                        <p class="tool-description">Combine multiple PDFs into one</p>
                     </div>
-                    <h3 class="tool-title">Merge PDF</h3>
-                    <p class="tool-description">Combine multiple PDFs into one</p>
+
+                    <div class="tool-card" data-tool="split" data-endpoint="/api/v1/pdf/split">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="8" y="2" width="8" height="8" rx="1"></rect>
+                                <rect x="2" y="14" width="8" height="8" rx="1"></rect>
+                                <rect x="14" y="14" width="8" height="8" rx="1"></rect>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Split PDF</h3>
+                        <p class="tool-description">Extract pages or split by range</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="rotate" data-endpoint="/api/v1/pdf/rotate">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 2v6h-6"></path>
+                                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                                <path d="M3 22v-6h6"></path>
+                                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Rotate PDF</h3>
+                        <p class="tool-description">Rotate pages 90, 180, or 270 degrees</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Split PDF -->
-                <div class="tool-card" data-tool="split" data-endpoint="/api/v1/pdf/split">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="8" y="2" width="8" height="8" rx="1"></rect>
-                            <rect x="2" y="14" width="8" height="8" rx="1"></rect>
-                            <rect x="14" y="14" width="8" height="8" rx="1"></rect>
-                        </svg>
+            <!-- Compress & Optimize (Very Common) -->
+            <div class="tool-section" data-section="compress">
+                <h3 class="tool-section-title">Compress & Optimize</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="compress" data-endpoint="/api/v1/pdf/compress">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="4 14 10 14 10 20"></polyline>
+                                <polyline points="20 10 14 10 14 4"></polyline>
+                                <line x1="14" y1="10" x2="21" y2="3"></line>
+                                <line x1="3" y1="21" x2="10" y2="14"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Compress PDF</h3>
+                        <p class="tool-description">Reduce file size with quality presets</p>
                     </div>
-                    <h3 class="tool-title">Split PDF</h3>
-                    <p class="tool-description">Extract pages or split by range</p>
+
+                    <div class="tool-card" data-tool="flatten" data-endpoint="/api/v1/pdf/flatten">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16v16H4z"></path>
+                                <path d="M4 12h16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Flatten PDF</h3>
+                        <p class="tool-description">Flatten annotations and forms</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="remove-metadata" data-endpoint="/api/v1/pdf/metadata/remove">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="9" y1="15" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Remove Metadata</h3>
+                        <p class="tool-description">Anonymize document info</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Rotate PDF -->
-                <div class="tool-card" data-tool="rotate" data-endpoint="/api/v1/pdf/rotate">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 2v6h-6"></path>
-                            <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
-                            <path d="M3 22v-6h6"></path>
-                            <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-                        </svg>
+            <!-- Convert to PDF (Very Common) -->
+            <div class="tool-section" data-section="convert-to">
+                <h3 class="tool-section-title">Convert to PDF</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="images-to-pdf" data-endpoint="/api/v1/image/images-to-pdf" data-multiple="true">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 3H3v18h18V3z"></path>
+                                <path d="M3 16l5-5 4 4 5-5 4 4"></path>
+                                <circle cx="8" cy="8" r="2"></circle>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Images to PDF</h3>
+                        <p class="tool-description">Combine images into a PDF</p>
                     </div>
-                    <h3 class="tool-title">Rotate PDF</h3>
-                    <p class="tool-description">Rotate pages 90, 180, or 270 degrees</p>
+
+                    <div class="tool-card" data-tool="word-to-pdf" data-endpoint="/api/v1/convert/word-to-pdf">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <path d="M10 12l2 4 2-4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Word to PDF</h3>
+                        <p class="tool-description">Convert DOCX to PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="excel-to-pdf" data-endpoint="/api/v1/convert/excel-to-pdf">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                                <line x1="8" y1="16" x2="16" y2="16"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Excel to PDF</h3>
+                        <p class="tool-description">Convert XLSX to PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="powerpoint-to-pdf" data-endpoint="/api/v1/convert/powerpoint-to-pdf">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <rect x="8" y="12" width="8" height="6" rx="1"></rect>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">PowerPoint to PDF</h3>
+                        <p class="tool-description">Convert PPTX to PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="html-to-pdf" data-endpoint="/api/v1/convert/html-to-pdf">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">HTML to PDF</h3>
+                        <p class="tool-description">Convert HTML code to PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="url-to-pdf" data-endpoint="/api/v1/convert/url-to-pdf">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">URL to PDF</h3>
+                        <p class="tool-description">Convert web page to PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="text-to-pdf" data-endpoint="/api/v1/convert/text-to-pdf">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Text to PDF</h3>
+                        <p class="tool-description">Convert plain text to PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="markdown-to-pdf" data-endpoint="/api/v1/convert/markdown-to-pdf">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Markdown to PDF</h3>
+                        <p class="tool-description">Convert Markdown to PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="rtf-to-pdf" data-endpoint="/api/v1/convert/rtf-to-pdf">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <path d="M9 13h6"></path>
+                                <path d="M9 17h4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">RTF to PDF</h3>
+                        <p class="tool-description">Convert RTF document to PDF</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Compress PDF -->
-                <div class="tool-card" data-tool="compress" data-endpoint="/api/v1/pdf/compress">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="4 14 10 14 10 20"></polyline>
-                            <polyline points="20 10 14 10 14 4"></polyline>
-                            <line x1="14" y1="10" x2="21" y2="3"></line>
-                            <line x1="3" y1="21" x2="10" y2="14"></line>
-                        </svg>
+            <!-- Convert from PDF (Very Common) -->
+            <div class="tool-section" data-section="convert-from">
+                <h3 class="tool-section-title">Convert from PDF</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="pdf-to-images" data-endpoint="/api/v1/image/pdf-to-images">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="8" height="8" rx="1"></rect>
+                                <rect x="14" y="2" width="8" height="8" rx="1"></rect>
+                                <rect x="2" y="14" width="8" height="8" rx="1"></rect>
+                                <rect x="14" y="14" width="8" height="8" rx="1"></rect>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">PDF to Images</h3>
+                        <p class="tool-description">Convert PDF pages to PNG/JPG/WebP</p>
                     </div>
-                    <h3 class="tool-title">Compress PDF</h3>
-                    <p class="tool-description">Reduce file size with quality presets</p>
+
+                    <div class="tool-card" data-tool="pdf-to-word" data-endpoint="/api/v1/convert/pdf-to-word">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <path d="M9 13h2v4h2v-4h2"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">PDF to Word</h3>
+                        <p class="tool-description">Convert PDF to DOCX format</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="pdf-to-excel" data-endpoint="/api/v1/convert/pdf-to-excel">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <rect x="8" y="12" width="3" height="3"></rect>
+                                <rect x="13" y="12" width="3" height="3"></rect>
+                                <rect x="8" y="17" width="3" height="3"></rect>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">PDF to Excel</h3>
+                        <p class="tool-description">Convert PDF to XLSX format</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="pdf-to-powerpoint" data-endpoint="/api/v1/convert/pdf-to-powerpoint">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">PDF to PowerPoint</h3>
+                        <p class="tool-description">Convert PDF to PPTX format</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Password Protect -->
-                <div class="tool-card" data-tool="password-add" data-endpoint="/api/v1/pdf/password/add">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
+            <!-- Security (Common) -->
+            <div class="tool-section" data-section="security">
+                <h3 class="tool-section-title">Security</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="password-add" data-endpoint="/api/v1/pdf/password/add">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Password Protect</h3>
+                        <p class="tool-description">Add password and set permissions</p>
                     </div>
-                    <h3 class="tool-title">Password Protect</h3>
-                    <p class="tool-description">Add password and set permissions</p>
+
+                    <div class="tool-card" data-tool="password-remove" data-endpoint="/api/v1/pdf/password/remove">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Remove Password</h3>
+                        <p class="tool-description">Unlock a protected PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="redact" data-endpoint="/api/v1/pdf/redact">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="3" y1="15" x2="21" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Redact Text</h3>
+                        <p class="tool-description">Permanently black out text</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Remove Password -->
-                <div class="tool-card" data-tool="password-remove" data-endpoint="/api/v1/pdf/password/remove">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
-                        </svg>
+            <!-- Extract (Common) -->
+            <div class="tool-section" data-section="extract">
+                <h3 class="tool-section-title">Extract</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="extract-text" data-endpoint="/api/v1/pdf/extract/text">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Extract Text</h3>
+                        <p class="tool-description">Get text content from PDF</p>
                     </div>
-                    <h3 class="tool-title">Remove Password</h3>
-                    <p class="tool-description">Unlock a protected PDF</p>
+
+                    <div class="tool-card" data-tool="extract-images" data-endpoint="/api/v1/pdf/extract/images">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Extract Images</h3>
+                        <p class="tool-description">Get all images from PDF</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="extract-pages" data-endpoint="/api/v1/pdf/extract/pages">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="12" y1="18" x2="12" y2="12"></line>
+                                <line x1="9" y1="15" x2="15" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Extract Pages</h3>
+                        <p class="tool-description">Extract specific pages as PDFs</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="ocr-extract" data-endpoint="/api/v1/ocr/extract">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <circle cx="10" cy="13" r="2"></circle>
+                                <path d="M20 21l-3.5-3.5"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">OCR Extract</h3>
+                        <p class="tool-description">Extract text from scanned PDFs</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Add Watermark -->
-                <div class="tool-card" data-tool="watermark" data-endpoint="/api/v1/pdf/watermark/text">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                            <path d="M2 17l10 5 10-5"></path>
-                            <path d="M2 12l10 5 10-5"></path>
-                        </svg>
+            <!-- Watermark & Page Numbers (Moderate) -->
+            <div class="tool-section" data-section="watermark">
+                <h3 class="tool-section-title">Watermark & Page Numbers</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="watermark" data-endpoint="/api/v1/pdf/watermark/text">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Add Watermark</h3>
+                        <p class="tool-description">Add text or image watermark</p>
                     </div>
-                    <h3 class="tool-title">Add Watermark</h3>
-                    <p class="tool-description">Add text or image watermark</p>
+
+                    <div class="tool-card" data-tool="page-numbers" data-endpoint="/api/v1/pdf/page-numbers">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <line x1="10" y1="9" x2="8" y2="9"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Add Page Numbers</h3>
+                        <p class="tool-description">Add page numbers to PDF</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Extract Text -->
-                <div class="tool-card" data-tool="extract-text" data-endpoint="/api/v1/pdf/extract/text">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                        </svg>
+            <!-- Page Operations (Less Common) -->
+            <div class="tool-section" data-section="page">
+                <h3 class="tool-section-title">Page Operations</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="crop-pages" data-endpoint="/api/v1/pdf/crop">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 2v14a2 2 0 0 0 2 2h14"></path>
+                                <path d="M18 22V8a2 2 0 0 0-2-2H2"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Crop Pages</h3>
+                        <p class="tool-description">Trim page margins</p>
                     </div>
-                    <h3 class="tool-title">Extract Text</h3>
-                    <p class="tool-description">Get text content from PDF</p>
+
+                    <div class="tool-card" data-tool="scale-pages" data-endpoint="/api/v1/pdf/scale">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <polyline points="9 21 3 21 3 15"></polyline>
+                                <line x1="21" y1="3" x2="14" y2="10"></line>
+                                <line x1="3" y1="21" x2="10" y2="14"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Scale Content</h3>
+                        <p class="tool-description">Resize page content by percentage</p>
+                    </div>
+
+                    <div class="tool-card" data-tool="resize-pages" data-endpoint="/api/v1/pdf/resize">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <polyline points="9 21 3 21 3 15"></polyline>
+                                <line x1="21" y1="3" x2="14" y2="10"></line>
+                                <line x1="3" y1="21" x2="10" y2="14"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Resize Pages</h3>
+                        <p class="tool-description">Change page canvas size</p>
+                    </div>
                 </div>
+            </div>
 
-                <!-- OCR Extract Text -->
-                <div class="tool-card" data-tool="ocr-extract" data-endpoint="/api/v1/ocr/extract">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <circle cx="10" cy="13" r="2"></circle>
-                            <path d="M20 21l-3.5-3.5"></path>
-                        </svg>
+            <!-- Advanced (Least Common) -->
+            <div class="tool-section" data-section="advanced">
+                <h3 class="tool-section-title">Advanced</h3>
+                <div class="tool-grid">
+                    <div class="tool-card" data-tool="batch-process" data-endpoint="/api/v1/batch/process">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                <line x1="12" y1="11" x2="12" y2="17"></line>
+                                <line x1="9" y1="14" x2="15" y2="14"></line>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Batch Process</h3>
+                        <p class="tool-description">Process multiple files via ZIP</p>
                     </div>
-                    <h3 class="tool-title">OCR Extract</h3>
-                    <p class="tool-description">Extract text from scanned PDFs</p>
-                </div>
 
-                <!-- Batch Process -->
-                <div class="tool-card" data-tool="batch-process" data-endpoint="/api/v1/batch/process">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                            <line x1="12" y1="11" x2="12" y2="17"></line>
-                            <line x1="9" y1="14" x2="15" y2="14"></line>
-                        </svg>
+                    <div class="tool-card" data-tool="compare" data-endpoint="/api/v1/pdf/compare" data-multiple="true">
+                        <div class="tool-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+                                <rect x="14" y="3" width="7" height="9" rx="1"></rect>
+                                <path d="M7 21h10"></path>
+                                <path d="M12 15v6"></path>
+                            </svg>
+                        </div>
+                        <h3 class="tool-title">Compare PDFs</h3>
+                        <p class="tool-description">Highlight differences between PDFs</p>
                     </div>
-                    <h3 class="tool-title">Batch Process</h3>
-                    <p class="tool-description">Process multiple files via ZIP</p>
-                </div>
-
-                <!-- Extract Images -->
-                <div class="tool-card" data-tool="extract-images" data-endpoint="/api/v1/pdf/extract/images">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Extract Images</h3>
-                    <p class="tool-description">Get all images from PDF</p>
-                </div>
-
-                <!-- Extract Pages -->
-                <div class="tool-card" data-tool="extract-pages" data-endpoint="/api/v1/pdf/extract/pages">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="12" y1="18" x2="12" y2="12"></line>
-                            <line x1="9" y1="15" x2="15" y2="15"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Extract Pages</h3>
-                    <p class="tool-description">Extract specific pages as PDFs</p>
-                </div>
-
-                <!-- PDF to Images -->
-                <div class="tool-card" data-tool="pdf-to-images" data-endpoint="/api/v1/image/pdf-to-images">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="2" width="8" height="8" rx="1"></rect>
-                            <rect x="14" y="2" width="8" height="8" rx="1"></rect>
-                            <rect x="2" y="14" width="8" height="8" rx="1"></rect>
-                            <rect x="14" y="14" width="8" height="8" rx="1"></rect>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">PDF to Images</h3>
-                    <p class="tool-description">Convert PDF pages to PNG/JPG/WebP</p>
-                </div>
-
-                <!-- Images to PDF -->
-                <div class="tool-card" data-tool="images-to-pdf" data-endpoint="/api/v1/image/images-to-pdf" data-multiple="true">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 3H3v18h18V3z"></path>
-                            <path d="M3 16l5-5 4 4 5-5 4 4"></path>
-                            <circle cx="8" cy="8" r="2"></circle>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Images to PDF</h3>
-                    <p class="tool-description">Combine images into a PDF</p>
-                </div>
-
-                <!-- Phase 2 Tools -->
-
-                <!-- Crop Pages -->
-                <div class="tool-card" data-tool="crop-pages" data-endpoint="/api/v1/pdf/crop">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 2v14a2 2 0 0 0 2 2h14"></path>
-                            <path d="M18 22V8a2 2 0 0 0-2-2H2"></path>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Crop Pages</h3>
-                    <p class="tool-description">Trim page margins</p>
-                </div>
-
-                <!-- Scale Content -->
-                <div class="tool-card" data-tool="scale-pages" data-endpoint="/api/v1/pdf/scale">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <polyline points="9 21 3 21 3 15"></polyline>
-                            <line x1="21" y1="3" x2="14" y2="10"></line>
-                            <line x1="3" y1="21" x2="10" y2="14"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Scale Content</h3>
-                    <p class="tool-description">Resize page content by percentage</p>
-                </div>
-
-                <!-- Resize Pages -->
-                <div class="tool-card" data-tool="resize-pages" data-endpoint="/api/v1/pdf/resize">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <polyline points="9 21 3 21 3 15"></polyline>
-                            <line x1="21" y1="3" x2="14" y2="10"></line>
-                            <line x1="3" y1="21" x2="10" y2="14"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Resize Pages</h3>
-                    <p class="tool-description">Change page canvas size</p>
-                </div>
-
-                <!-- Add Page Numbers -->
-                <div class="tool-card" data-tool="page-numbers" data-endpoint="/api/v1/pdf/page-numbers">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <line x1="10" y1="9" x2="8" y2="9"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Add Page Numbers</h3>
-                    <p class="tool-description">Add page numbers to PDF</p>
-                </div>
-
-                <!-- Flatten PDF -->
-                <div class="tool-card" data-tool="flatten" data-endpoint="/api/v1/pdf/flatten">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16v16H4z"></path>
-                            <path d="M4 12h16"></path>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Flatten PDF</h3>
-                    <p class="tool-description">Flatten annotations and forms</p>
-                </div>
-
-                <!-- Remove Metadata -->
-                <div class="tool-card" data-tool="remove-metadata" data-endpoint="/api/v1/pdf/metadata/remove">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="9" y1="15" x2="15" y2="15"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Remove Metadata</h3>
-                    <p class="tool-description">Anonymize document info</p>
-                </div>
-
-                <!-- Compare PDFs -->
-                <div class="tool-card" data-tool="compare" data-endpoint="/api/v1/pdf/compare" data-multiple="true">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="9" rx="1"></rect>
-                            <rect x="14" y="3" width="7" height="9" rx="1"></rect>
-                            <path d="M7 21h10"></path>
-                            <path d="M12 15v6"></path>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Compare PDFs</h3>
-                    <p class="tool-description">Highlight differences between PDFs</p>
-                </div>
-
-                <!-- Redact Text -->
-                <div class="tool-card" data-tool="redact" data-endpoint="/api/v1/pdf/redact">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                            <line x1="3" y1="9" x2="21" y2="9"></line>
-                            <line x1="3" y1="15" x2="21" y2="15"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Redact Text</h3>
-                    <p class="tool-description">Permanently black out text</p>
-                </div>
-
-                <!-- Phase 3: Document Conversions -->
-
-                <!-- PDF to Word -->
-                <div class="tool-card" data-tool="pdf-to-word" data-endpoint="/api/v1/convert/pdf-to-word">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <path d="M9 13h2v4h2v-4h2"></path>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">PDF to Word</h3>
-                    <p class="tool-description">Convert PDF to DOCX format</p>
-                </div>
-
-                <!-- Word to PDF -->
-                <div class="tool-card" data-tool="word-to-pdf" data-endpoint="/api/v1/convert/word-to-pdf">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <path d="M10 12l2 4 2-4"></path>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Word to PDF</h3>
-                    <p class="tool-description">Convert DOCX to PDF</p>
-                </div>
-
-                <!-- PDF to Excel -->
-                <div class="tool-card" data-tool="pdf-to-excel" data-endpoint="/api/v1/convert/pdf-to-excel">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <rect x="8" y="12" width="3" height="3"></rect>
-                            <rect x="13" y="12" width="3" height="3"></rect>
-                            <rect x="8" y="17" width="3" height="3"></rect>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">PDF to Excel</h3>
-                    <p class="tool-description">Convert PDF to XLSX format</p>
-                </div>
-
-                <!-- Excel to PDF -->
-                <div class="tool-card" data-tool="excel-to-pdf" data-endpoint="/api/v1/convert/excel-to-pdf">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="8" y1="12" x2="16" y2="12"></line>
-                            <line x1="8" y1="16" x2="16" y2="16"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Excel to PDF</h3>
-                    <p class="tool-description">Convert XLSX to PDF</p>
-                </div>
-
-                <!-- PDF to PowerPoint -->
-                <div class="tool-card" data-tool="pdf-to-powerpoint" data-endpoint="/api/v1/convert/pdf-to-powerpoint">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-                            <line x1="8" y1="21" x2="16" y2="21"></line>
-                            <line x1="12" y1="17" x2="12" y2="21"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">PDF to PowerPoint</h3>
-                    <p class="tool-description">Convert PDF to PPTX format</p>
-                </div>
-
-                <!-- PowerPoint to PDF -->
-                <div class="tool-card" data-tool="powerpoint-to-pdf" data-endpoint="/api/v1/convert/powerpoint-to-pdf">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <rect x="8" y="12" width="8" height="6" rx="1"></rect>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">PowerPoint to PDF</h3>
-                    <p class="tool-description">Convert PPTX to PDF</p>
-                </div>
-
-                <!-- HTML to PDF -->
-                <div class="tool-card" data-tool="html-to-pdf" data-endpoint="/api/v1/convert/html-to-pdf">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="16 18 22 12 16 6"></polyline>
-                            <polyline points="8 6 2 12 8 18"></polyline>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">HTML to PDF</h3>
-                    <p class="tool-description">Convert HTML code to PDF</p>
-                </div>
-
-                <!-- Markdown to PDF -->
-                <div class="tool-card" data-tool="markdown-to-pdf" data-endpoint="/api/v1/convert/markdown-to-pdf">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Markdown to PDF</h3>
-                    <p class="tool-description">Convert Markdown to PDF</p>
-                </div>
-
-                <!-- URL to PDF -->
-                <div class="tool-card" data-tool="url-to-pdf" data-endpoint="/api/v1/convert/url-to-pdf">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="2" y1="12" x2="22" y2="12"></line>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">URL to PDF</h3>
-                    <p class="tool-description">Convert web page to PDF</p>
-                </div>
-
-                <!-- Text to PDF -->
-                <div class="tool-card" data-tool="text-to-pdf" data-endpoint="/api/v1/convert/text-to-pdf">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <line x1="10" y1="9" x2="8" y2="9"></line>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">Text to PDF</h3>
-                    <p class="tool-description">Convert plain text to PDF</p>
-                </div>
-
-                <!-- RTF to PDF -->
-                <div class="tool-card" data-tool="rtf-to-pdf" data-endpoint="/api/v1/convert/rtf-to-pdf">
-                    <div class="tool-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <path d="M9 13h6"></path>
-                            <path d="M9 17h4"></path>
-                        </svg>
-                    </div>
-                    <h3 class="tool-title">RTF to PDF</h3>
-                    <p class="tool-description">Convert RTF document to PDF</p>
                 </div>
             </div>
         </section>

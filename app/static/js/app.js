@@ -49,8 +49,103 @@ class NoTracePDFApp {
         this.themeToggle = document.getElementById('theme-toggle');
         this.initTheme();
 
+        // Search functionality
+        this.searchInput = document.getElementById('tool-search');
+        this.searchClear = document.getElementById('search-clear');
+        this.searchResultsCount = document.getElementById('search-results-count');
+        this.initSearch();
+
         // Initialize
         this.init();
+    }
+    
+    /**
+     * Initialize search functionality
+     */
+    initSearch() {
+        if (!this.searchInput) return;
+        
+        this.searchInput.addEventListener('input', (e) => {
+            this.handleSearch(e.target.value);
+        });
+        
+        if (this.searchClear) {
+            this.searchClear.addEventListener('click', () => {
+                this.searchInput.value = '';
+                this.handleSearch('');
+                this.searchInput.focus();
+            });
+        }
+        
+        // Keyboard shortcut: "/" to focus search
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && !this.modal.classList.contains('hidden') === false) {
+                const target = e.target;
+                if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    this.searchInput.focus();
+                }
+            }
+        });
+    }
+    
+    /**
+     * Handle search input and filter tools
+     */
+    handleSearch(query) {
+        const normalizedQuery = query.toLowerCase().trim();
+        
+        // Toggle clear button
+        if (this.searchClear) {
+            if (normalizedQuery.length > 0) {
+                this.searchClear.classList.remove('hidden');
+            } else {
+                this.searchClear.classList.add('hidden');
+            }
+        }
+        
+        // Get all tool sections and cards
+        const toolSections = document.querySelectorAll('.tool-section');
+        let totalVisible = 0;
+        
+        toolSections.forEach(section => {
+            const cards = section.querySelectorAll('.tool-card');
+            let sectionVisible = 0;
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.tool-title')?.textContent.toLowerCase() || '';
+                const description = card.querySelector('.tool-description')?.textContent.toLowerCase() || '';
+                const toolId = card.dataset.tool || '';
+                
+                if (normalizedQuery === '' || 
+                    title.includes(normalizedQuery) || 
+                    description.includes(normalizedQuery) ||
+                    toolId.includes(normalizedQuery)) {
+                    card.classList.remove('hidden');
+                    sectionVisible++;
+                    totalVisible++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Show/hide entire section based on visible cards
+            if (sectionVisible > 0) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        });
+        
+        // Update results count
+        if (this.searchResultsCount) {
+            if (normalizedQuery.length > 0) {
+                this.searchResultsCount.textContent = `Found ${totalVisible} tool${totalVisible !== 1 ? 's' : ''}`;
+                this.searchResultsCount.classList.remove('hidden');
+            } else {
+                this.searchResultsCount.classList.add('hidden');
+            }
+        }
     }
     
     /**

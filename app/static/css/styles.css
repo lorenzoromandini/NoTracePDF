@@ -166,10 +166,129 @@ body {
 .section-title {
     font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     color: var(--text);
     text-align: center;
 }
+
+/* Search Container */
+.search-container {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto 1.5rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.875rem 2.75rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    background: var(--surface);
+    color: var(--text);
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.search-clear {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: var(--text-secondary);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-clear:hover {
+    color: var(--text);
+}
+
+.search-clear svg {
+    width: 20px;
+    height: 20px;
+}
+
+.search-results-count {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Tool Section */
+.tool-section {
+    margin-bottom: 2.5rem;
+}
+
+.tool-section:last-child {
+    margin-bottom: 0;
+}
+
+.tool-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Section-specific icon colors */
+[data-section="organize"] .tool-section-title { border-color: #3b82f6; }
+[data-section="organize"] .tool-icon { color: #3b82f6; }
+
+[data-section="security"] .tool-section-title { border-color: #ef4444; }
+[data-section="security"] .tool-icon { color: #ef4444; }
+
+[data-section="compress"] .tool-section-title { border-color: #10b981; }
+[data-section="compress"] .tool-icon { color: #10b981; }
+
+[data-section="extract"] .tool-section-title { border-color: #8b5cf6; }
+[data-section="extract"] .tool-icon { color: #8b5cf6; }
+
+[data-section="convert-to"] .tool-section-title { border-color: #f59e0b; }
+[data-section="convert-to"] .tool-icon { color: #f59e0b; }
+
+[data-section="convert-from"] .tool-section-title { border-color: #06b6d4; }
+[data-section="convert-from"] .tool-icon { color: #06b6d4; }
+
+[data-section="watermark"] .tool-section-title { border-color: #ec4899; }
+[data-section="watermark"] .tool-icon { color: #ec4899; }
+
+[data-section="page"] .tool-section-title { border-color: #6366f1; }
+[data-section="page"] .tool-icon { color: #6366f1; }
+
+[data-section="advanced"] .tool-section-title { border-color: #14b8a6; }
+[data-section="advanced"] .tool-icon { color: #14b8a6; }
 
 /* Tool Grid - Mobile First */
 .tool-grid {
