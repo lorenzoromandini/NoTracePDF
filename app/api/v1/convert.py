@@ -17,6 +17,11 @@ from app.services.conversion_service import (
     pdf_to_office,
     validate_office_file,
 )
+from app.services.web_conversion_service import (
+    html_to_pdf,
+    markdown_to_pdf,
+    url_to_pdf,
+)
 from app.utils.file_utils import (
     validate_pdf,
     validate_docx,
@@ -249,3 +254,116 @@ async def api_pdf_to_powerpoint(
         raise HTTPException(status_code=504, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error converting to PowerPoint: {str(e)}")
+
+
+# =====================================================
+# HTML/Markdown/URL to PDF Conversions (CONV-07 to CONV-09)
+# =====================================================
+
+
+@router.post("/html-to-pdf")
+async def api_html_to_pdf(
+    html: str = Form(..., description="HTML content to convert"),
+    base_url: Optional[str] = Form(None, description="Base URL for relative links")
+):
+    """
+    Convert HTML content to PDF.
+    
+    Accepts HTML string and converts it to PDF using WeasyPrint.
+    CSS styles in the HTML are preserved.
+    
+    Optionally provide base_url to resolve relative URLs in the HTML.
+    """
+    try:
+        # Convert HTML to PDF
+        pdf_bytes = html_to_pdf(html, base_url)
+        
+        return StreamingResponse(
+            pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": 'attachment; filename="converted.pdf"'
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error converting HTML to PDF: {str(e)}")
+
+
+@router.post("/markdown-to-pdf")
+async def api_markdown_to_pdf(
+    markdown: str = Form(..., description="Markdown content to convert")
+):
+    """
+    Convert Markdown content to PDF.
+    
+    Accepts Markdown string and converts it to PDF.
+    Supports common Markdown features:
+    - Tables
+    - Code blocks with syntax highlighting style
+    - Headers
+    - Lists
+    - Blockquotes
+    """
+    try:
+        # Convert Markdown to PDF
+        pdf_bytes = markdown_to_pdf(markdown)
+        
+        return StreamingResponse(
+            pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": 'attachment; filename="converted.pdf"'
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error converting Markdown to PDF: {str(e)}")
+
+
+@router.post("/url-to-pdf")
+async def api_url_to_pdf(
+    url: str = Form(..., description="URL to convert to PDF"),
+    timeout: int = Form(30, description="Fetch timeout in seconds", ge=5, le=120)
+):
+    """
+    Convert web page URL to PDF.
+    
+    Fetches the web page at the given URL and converts it to PDF.
+    
+    SECURITY RESTRICTIONS:
+    - Only HTTP/HTTPS URLs are allowed
+    - Private IP addresses are blocked (SSRF prevention)
+    - Localhost and internal URLs are blocked
+    
+    The fetched page's CSS styling is preserved in the PDF.
+    """
+    try:
+        # Convert URL to PDF (includes SSRF validation)
+        pdf_bytes = await url_to_pdf(url, timeout)
+        
+        # Generate filename from URL
+        from urllib.parse import urlparse as parse_url
+        parsed = parse_url(url)
+        domain = parsed.netloc or "converted"
+        # Clean domain for filename
+        safe_domain = "".join(c if c.isalnum() or c in '-_' else '_' for c in domain)
+        filename = f"{safe_domain}.pdf"
+        
+        return StreamingResponse(
+            pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"'
+            }
+        )
+    except ValueError as e:
+        # URL validation failed (SSRF protection)
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        error_msg = str(e)
+        if "timed out" in error_msg.lower():
+            raise HTTPException(status_code=504, detail=f"URL fetch timed out: {error_msg}")
+        if "404" in error_msg or "not found" in error_msg.lower():
+            raise HTTPException(status_code=404, detail=f"URL not found: {url}")
+        if "403" in error_msg or "forbidden" in error_msg.lower():
+            raise HTTPException(status_code=403, detail=f"Access forbidden: {url}")
+        raise HTTPException(status_code=500, detail=f"Error converting URL to PDF: {error_msg}")
