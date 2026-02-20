@@ -191,12 +191,22 @@ class UploadHandler {
                     <span class="file-name">${this.escapeHtml(file.name)}</span>
                     <span class="file-size">${this.formatFileSize(file.size)}</span>
                 </div>
-                <button class="file-remove" data-index="${index}" type="button" aria-label="Remove file">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+                <div class="file-actions">
+                    ${this.isPDF(file) ? `
+                    <button class="preview-btn" data-file-index="${index}" type="button" title="Preview PDF">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                    ` : ''}
+                    <button class="file-remove" data-index="${index}" type="button" aria-label="Remove file">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
             </li>
         `).join('');
 
@@ -208,6 +218,14 @@ class UploadHandler {
                 this.removeFile(index);
             });
         });
+    }
+    
+    /**
+     * Check if a file is a PDF
+     */
+    isPDF(file) {
+        return file.type === 'application/pdf' || 
+               file.name.toLowerCase().endsWith('.pdf');
     }
 
     formatFileSize(bytes) {

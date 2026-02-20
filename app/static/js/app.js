@@ -41,6 +41,9 @@ class NoTracePDFApp {
         
         // Client-side processor for small files
         this.clientSideProcessor = new ClientSideProcessor();
+        
+        // PDF Preview
+        this.pdfPreview = new PDFPreview();
 
         // Initialize
         this.init();
@@ -84,6 +87,18 @@ class NoTracePDFApp {
             fileListContainer: this.fileListContainer,
             filesContainer: this.filesContainer,
             onFilesChange: (files, errors) => this.handleFilesChange(files, errors)
+        });
+        
+        // Preview button click handler
+        this.filesContainer.addEventListener('click', (e) => {
+            const previewBtn = e.target.closest('.preview-btn');
+            if (previewBtn) {
+                const index = parseInt(previewBtn.dataset.fileIndex, 10);
+                const files = this.uploadHandler.getFiles();
+                if (files[index]) {
+                    this.pdfPreview.show(files[index]);
+                }
+            }
         });
     }
 
