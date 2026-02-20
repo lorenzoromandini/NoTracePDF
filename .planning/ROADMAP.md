@@ -13,7 +13,7 @@ NoTracePDF is a self-hosted, zero-trace PDF processing toolkit. The journey deli
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: MVP Foundation** - Complete zero-trace PDF toolkit with 9 core tools, UI, and Docker deployment
-- [ ] **Phase 2: Extended PDF Operations** - Crop, scale, page numbers, metadata removal, comparison, redaction
+- [x] **Phase 2: Extended PDF Operations** - Crop, scale, page numbers, metadata removal, comparison, redaction
 - [ ] **Phase 3: Document Conversions** - PDF ↔ Office formats, HTML/Markdown/URL → PDF
 - [ ] **Phase 4: Advanced Features** - OCR, batch processing, client-side fallback, PDF preview, dark mode
 
@@ -55,10 +55,10 @@ Plans:
 **Plans**: 4 plans in 1 wave
 
 Plans:
-- [ ] 02-01-PLAN.md — Page dimension operations: crop, scale, resize (PDF-17, PDF-18, PDF-19)
-- [ ] 02-02-PLAN.md — Page numbers and anonymization: numbers, flatten, metadata (PDF-20, PDF-21, PDF-22)
-- [ ] 02-03-PLAN.md — PDF comparison with visual diff highlighting (PDF-23)
-- [ ] 02-04-PLAN.md — Permanent text redaction (PDF-24)
+- [x] 02-01-PLAN.md — Page dimension operations: crop, scale, resize (PDF-17, PDF-18, PDF-19)
+- [x] 02-02-PLAN.md — Page numbers and anonymization: numbers, flatten, metadata (PDF-20, PDF-21, PDF-22)
+- [x] 02-03-PLAN.md — PDF comparison with visual diff highlighting (PDF-23)
+- [x] 02-04-PLAN.md — Permanent text redaction (PDF-24)
 
 ### Phase 3: Document Conversions
 **Goal**: Users can convert between PDF and common document formats without leaving the zero-trace environment
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. MVP Foundation | 8/8 | Complete | 01-01, 01-02, 01-03, 01-04, 01-05, 01-06, 01-07, 01-08 |
-| 2. Extended PDF Operations | 0/4 | Not started | - |
+| 2. Extended PDF Operations | 4/4 | Complete | 02-01, 02-02, 02-03, 02-04 |
 | 3. Document Conversions | 0/TBD | Not started | - |
 | 4. Advanced Features | 0/TBD | Not started | - |
 
@@ -100,4 +100,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 *Roadmap created: 2026-02-19*
 *Depth: comprehensive*
 *Coverage: 69/69 requirements mapped*
-*Last updated: 2026-02-20 after Phase 2 planning*
+*Last updated: 2026-02-20 after Phase 2 execution*

@@ -66,14 +66,14 @@
 
 ### Extended PDF Operations
 
-- [ ] **PDF-17**: User can crop pages to specific dimensions
-- [ ] **PDF-18**: User can scale pages to specific sizes
-- [ ] **PDF-19**: User can resize pages
-- [ ] **PDF-20**: User can add page numbers with position and format options
-- [ ] **PDF-21**: User can flatten annotations into document content
-- [ ] **PDF-22**: User can remove metadata (author, timestamps, hidden data)
-- [ ] **PDF-23**: User can compare two PDFs with diff highlighting
-- [ ] **PDF-24**: User can redact (permanently black out) sensitive text
+- [x] **PDF-17**: User can crop pages to specific dimensions
+- [x] **PDF-18**: User can scale pages to specific sizes
+- [x] **PDF-19**: User can resize pages
+- [x] **PDF-20**: User can add page numbers with position and format options
+- [x] **PDF-21**: User can flatten annotations into document content
+- [x] **PDF-22**: User can remove metadata (author, timestamps, hidden data)
+- [x] **PDF-23**: User can compare two PDFs with diff highlighting
+- [x] **PDF-24**: User can redact (permanently black out) sensitive text
 
 ### Document Conversion
 
@@ -162,14 +162,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEPLOY-02 | Phase 1 | Complete |
 | DEPLOY-03 | Phase 1 | Complete |
 | DEPLOY-04 | Phase 1 | Complete |
-| PDF-17 | Phase 2 | Pending |
-| PDF-18 | Phase 2 | Pending |
-| PDF-19 | Phase 2 | Pending |
-| PDF-20 | Phase 2 | Pending |
-| PDF-21 | Phase 2 | Pending |
-| PDF-22 | Phase 2 | Pending |
-| PDF-23 | Phase 2 | Pending |
-| PDF-24 | Phase 2 | Pending |
+| PDF-17 | Phase 2 | Complete |
+| PDF-18 | Phase 2 | Complete |
+| PDF-19 | Phase 2 | Complete |
+| PDF-20 | Phase 2 | Complete |
+| PDF-21 | Phase 2 | Complete |
+| PDF-22 | Phase 2 | Complete |
+| PDF-23 | Phase 2 | Complete |
+| PDF-24 | Phase 2 | Complete |
 | CONV-01 | Phase 3 | Pending |
 | CONV-02 | Phase 3 | Pending |
 | CONV-03 | Phase 3 | Pending |

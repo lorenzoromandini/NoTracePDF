@@ -42,18 +42,29 @@ open http://localhost:8000
 | Web UI | ✅ | Modern drag-and-drop interface |
 | Zero-Trace | ✅ | Verified privacy architecture |
 
-### Coming Soon (Phase 2-4)
+### Extended (Phase 2) - Complete ✓
 
-- Crop / scale / resize pages
-- Add page numbers
-- Flatten annotations / remove metadata
-- Compare two PDFs (diff highlighting)
-- Redact sensitive text
-- PDF ↔ Office (Word, Excel, PowerPoint)
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Crop Pages | ✅ | Crop pages to specific dimensions |
+| Scale Pages | ✅ | Scale pages to percentage or fit |
+| Resize Pages | ✅ | Resize pages to specific size (A4, Letter, etc.) |
+| Add Page Numbers | ✅ | Customizable position, format, and font |
+| Flatten Annotations | ✅ | Lock comments/highlights into content |
+| Remove Metadata | ✅ | Strip author, timestamps, hidden data |
+| Compare PDFs | ✅ | Visual diff highlighting between two PDFs |
+| Redact Text | ✅ | Permanently black out sensitive text |
+
+### Coming Soon (Phase 3-4)
+
+- PDF → Office (Word, Excel, PowerPoint)
+- Office files → PDF
 - HTML / Markdown / URL → PDF
+- Text / RTF → PDF
 - OCR on scanned PDFs
 - Batch processing via ZIP
 - Client-side fallback for small files
+- PDF preview
 - Dark mode
 
 ## Architecture
@@ -255,6 +266,14 @@ pytest tests/test_zero_trace.py -v
 | `/api/v1/pdf/extract/text` | POST | Extract text from PDF |
 | `/api/v1/pdf/extract/images` | POST | Extract images from PDF |
 | `/api/v1/pdf/extract/pages` | POST | Extract pages as separate PDFs |
+| `/api/v1/pdf/crop` | POST | Crop pages to specific dimensions |
+| `/api/v1/pdf/scale` | POST | Scale pages to percentage or fit |
+| `/api/v1/pdf/resize` | POST | Resize pages to specific size |
+| `/api/v1/pdf/page-numbers` | POST | Add page numbers |
+| `/api/v1/pdf/flatten` | POST | Flatten annotations into content |
+| `/api/v1/pdf/metadata/remove` | POST | Remove all metadata |
+| `/api/v1/pdf/compare` | POST | Compare two PDFs with diff highlighting |
+| `/api/v1/pdf/redact` | POST | Permanently redact text |
 
 ### Image Conversion
 
