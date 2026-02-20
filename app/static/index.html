@@ -15,7 +15,7 @@
     <!-- PDF.js for preview -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
-<body data-theme="dark">
+<body data-theme="dark" data-lang="it">
     <header class="header">
         <div class="header-content">
             <h1 class="logo">
@@ -27,30 +27,40 @@
                 </svg>
                 NoTracePDF
             </h1>
-            <p class="tagline">Your files never leave your device</p>
+            <p class="tagline" data-i18n="tagline">I tuoi file non lasciano mai il tuo dispositivo</p>
         </div>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
-            <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <svg class="moon-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-        </button>
+        <div class="header-actions">
+            <a href="https://github.com/lorenzoromandini/NoTracePDF" target="_blank" rel="noopener noreferrer" class="github-link" aria-label="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Switch language">
+                <span class="lang-label">IT</span>
+            </button>
+            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
     </header>
 
     <main class="main-content">
         <!-- Tool Selection Grid -->
         <section id="tool-selection" class="tool-selection">
-            <h2 class="section-title">Choose a Tool</h2>
+            <h2 class="section-title" data-i18n="chooseTool">Scegli uno Strumento</h2>
             
             <!-- Search Bar -->
             <div class="search-container">
@@ -58,7 +68,7 @@
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="M21 21l-4.35-4.35"></path>
                 </svg>
-                <input type="text" id="tool-search" class="search-input" placeholder="Search tools..." autocomplete="off">
+                <input type="text" id="tool-search" class="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="Cerca strumenti..." autocomplete="off">
                 <button id="search-clear" class="search-clear hidden" aria-label="Clear search">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -70,7 +80,7 @@
             
             <!-- Organize & Modify (Most Used) -->
             <div class="tool-section" data-section="organize">
-                <h3 class="tool-section-title">Organize & Modify</h3>
+                <h3 class="tool-section-title" data-i18n="organizeSection">Organizza & Modifica</h3>
                 <div class="tool-grid">
                     <div class="tool-card" data-tool="merge" data-endpoint="/api/v1/pdf/merge" data-multiple="true">
                         <div class="tool-icon">
@@ -85,7 +95,7 @@
                         <p class="tool-description">Combine multiple PDFs into one</p>
                     </div>
 
-                    <div class="tool-card" data-tool="split" data-endpoint="/api/v1/pdf/split">
+                    <div class="tool-card" data-tool="split" data-endpoint="/api/v1/pdf/split" data-title-it="Dividi PDF" data-desc-it="Estrai pagine o dividi per intervallo">
                         <div class="tool-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="8" y="2" width="8" height="8" rx="1"></rect>
@@ -97,7 +107,7 @@
                         <p class="tool-description">Extract pages or split by range</p>
                     </div>
 
-                    <div class="tool-card" data-tool="rotate" data-endpoint="/api/v1/pdf/rotate">
+                    <div class="tool-card" data-tool="rotate" data-endpoint="/api/v1/pdf/rotate" data-title-it="Ruota PDF" data-desc-it="Ruota le pagine di 90, 180 o 270 gradi">
                         <div class="tool-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 2v6h-6"></path>
@@ -114,9 +124,9 @@
 
             <!-- Compress & Optimize (Very Common) -->
             <div class="tool-section" data-section="compress">
-                <h3 class="tool-section-title">Compress & Optimize</h3>
+                <h3 class="tool-section-title" data-i18n="compressSection">Comprimi & Ottimizza</h3>
                 <div class="tool-grid">
-                    <div class="tool-card" data-tool="compress" data-endpoint="/api/v1/pdf/compress">
+                    <div class="tool-card" data-tool="compress" data-endpoint="/api/v1/pdf/compress" data-title-it="Comprimi PDF" data-desc-it="Riduci la dimensione del file con preset di qualità">
                         <div class="tool-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="4 14 10 14 10 20"></polyline>
@@ -129,7 +139,7 @@
                         <p class="tool-description">Reduce file size with quality presets</p>
                     </div>
 
-                    <div class="tool-card" data-tool="flatten" data-endpoint="/api/v1/pdf/flatten">
+                    <div class="tool-card" data-tool="flatten" data-endpoint="/api/v1/pdf/flatten" data-title-it="Appiattisci PDF" data-desc-it="Appiattisci annotazioni e moduli">
                         <div class="tool-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 4h16v16H4z"></path>
@@ -140,7 +150,7 @@
                         <p class="tool-description">Flatten annotations and forms</p>
                     </div>
 
-                    <div class="tool-card" data-tool="remove-metadata" data-endpoint="/api/v1/pdf/metadata/remove">
+                    <div class="tool-card" data-tool="remove-metadata" data-endpoint="/api/v1/pdf/metadata/remove" data-title-it="Rimuovi Metadati" data-desc-it="Anonimizza le informazioni del documento">
                         <div class="tool-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -156,7 +166,7 @@
 
             <!-- Convert to PDF (Very Common) -->
             <div class="tool-section" data-section="convert-to">
-                <h3 class="tool-section-title">Convert to PDF</h3>
+                <h3 class="tool-section-title" data-i18n="convertToSection">Converti in PDF</h3>
                 <div class="tool-grid">
                     <div class="tool-card" data-tool="images-to-pdf" data-endpoint="/api/v1/image/images-to-pdf" data-multiple="true">
                         <div class="tool-icon">
@@ -273,7 +283,7 @@
 
             <!-- Convert from PDF (Very Common) -->
             <div class="tool-section" data-section="convert-from">
-                <h3 class="tool-section-title">Convert from PDF</h3>
+                <h3 class="tool-section-title" data-i18n="convertFromSection">Converti da PDF</h3>
                 <div class="tool-grid">
                     <div class="tool-card" data-tool="pdf-to-images" data-endpoint="/api/v1/image/pdf-to-images">
                         <div class="tool-icon">
@@ -330,7 +340,7 @@
 
             <!-- Security (Common) -->
             <div class="tool-section" data-section="security">
-                <h3 class="tool-section-title">Security</h3>
+                <h3 class="tool-section-title" data-i18n="securitySection">Sicurezza</h3>
                 <div class="tool-grid">
                     <div class="tool-card" data-tool="password-add" data-endpoint="/api/v1/pdf/password/add">
                         <div class="tool-icon">
@@ -370,7 +380,7 @@
 
             <!-- Extract (Common) -->
             <div class="tool-section" data-section="extract">
-                <h3 class="tool-section-title">Extract</h3>
+                <h3 class="tool-section-title" data-i18n="extractSection">Estrai</h3>
                 <div class="tool-grid">
                     <div class="tool-card" data-tool="extract-text" data-endpoint="/api/v1/pdf/extract/text">
                         <div class="tool-icon">
@@ -427,7 +437,7 @@
 
             <!-- Watermark & Page Numbers (Moderate) -->
             <div class="tool-section" data-section="watermark">
-                <h3 class="tool-section-title">Watermark & Page Numbers</h3>
+                <h3 class="tool-section-title" data-i18n="watermarkSection">Filigrana & Numeri di Pagina</h3>
                 <div class="tool-grid">
                     <div class="tool-card" data-tool="watermark" data-endpoint="/api/v1/pdf/watermark/text">
                         <div class="tool-icon">
@@ -459,7 +469,7 @@
 
             <!-- Page Operations (Less Common) -->
             <div class="tool-section" data-section="page">
-                <h3 class="tool-section-title">Page Operations</h3>
+                <h3 class="tool-section-title" data-i18n="pageSection">Operazioni di Pagina</h3>
                 <div class="tool-grid">
                     <div class="tool-card" data-tool="crop-pages" data-endpoint="/api/v1/pdf/crop">
                         <div class="tool-icon">
@@ -502,7 +512,7 @@
 
             <!-- Advanced (Least Common) -->
             <div class="tool-section" data-section="advanced">
-                <h3 class="tool-section-title">Advanced</h3>
+                <h3 class="tool-section-title" data-i18n="advancedSection">Avanzato</h3>
                 <div class="tool-grid">
                     <div class="tool-card" data-tool="batch-process" data-endpoint="/api/v1/batch/process">
                         <div class="tool-icon">
@@ -644,15 +654,16 @@
     </main>
 
     <footer class="footer">
-        <p class="footer-text">
+        <p class="footer-text" data-i18n="footerText">
             <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
-            Zero persistence. Zero tracking. 100% private.
+            Nessuna persistenza. Nessun tracciamento. 100% privato.
         </p>
-        <p class="footer-subtitle">All files are processed in memory and permanently deleted after download.</p>
+        <p class="footer-subtitle" data-i18n="footerSubtitle">Tutti i file vengono elaborati in memoria e cancellati definitivamente dopo il download.</p>
     </footer>
 
+    <script src="/js/i18n.js"></script>
     <script src="/js/tools.js"></script>
     <script src="/js/upload.js"></script>
     <script src="/js/batch.js"></script>

@@ -49,14 +49,40 @@ class NoTracePDFApp {
         this.themeToggle = document.getElementById('theme-toggle');
         this.initTheme();
 
+        // Language toggle
+        this.langToggle = document.getElementById('lang-toggle');
+        this.initLanguage();
+
         // Search functionality
         this.searchInput = document.getElementById('tool-search');
         this.searchClear = document.getElementById('search-clear');
         this.searchResultsCount = document.getElementById('search-results-count');
         this.initSearch();
 
+        // Initialize i18n
+        if (window.i18n) {
+            window.i18n.init();
+        }
+
         // Initialize
         this.init();
+    }
+    
+    /**
+     * Initialize language toggle
+     */
+    initLanguage() {
+        if (!this.langToggle) return;
+        
+        this.langToggle.addEventListener('click', () => {
+            if (window.i18n) {
+                window.i18n.toggleLanguage();
+                // Re-run search if there's a query
+                if (this.searchInput && this.searchInput.value) {
+                    this.handleSearch(this.searchInput.value);
+                }
+            }
+        });
     }
     
     /**
@@ -104,6 +130,10 @@ class NoTracePDFApp {
             }
         }
         
+        // Get current and other language for searching
+        const currentLang = window.i18n ? window.i18n.getLanguage() : 'it';
+        const otherLang = currentLang === 'it' ? 'en' : 'it';
+        
         // Get all tool sections and cards
         const toolSections = document.querySelectorAll('.tool-section');
         let totalVisible = 0;
@@ -117,10 +147,33 @@ class NoTracePDFApp {
                 const description = card.querySelector('.tool-description')?.textContent.toLowerCase() || '';
                 const toolId = card.dataset.tool || '';
                 
-                if (normalizedQuery === '' || 
-                    title.includes(normalizedQuery) || 
-                    description.includes(normalizedQuery) ||
-                    toolId.includes(normalizedQuery)) {
+                // Get translations for both languages
+                let titleEn = title;
+                let descEn = description;
+                let titleIt = title;
+                let descIt = description;
+                
+                if (window.i18n) {
+                    const toolKey = card.dataset.tool;
+                    const trans = window.i18n.translations['en'][window.i18n.toolKeyMap[toolKey]];
+                    if (trans) {
+                        titleEn = trans.title.toLowerCase();
+                        descEn = trans.desc.toLowerCase();
+                    }
+                    const transIt = window.i18n.translations['it'][window.i18n.toolKeyMap[toolKey]];
+                    if (transIt) {
+                        titleIt = transIt.title.toLowerCase();
+                        descIt = transIt.desc.toLowerCase();
+                    }
+                }
+                
+                // Check if query matches any language (current, other, or tool ID)
+                const matchesCurrentLang = title.includes(normalizedQuery) || descEn.includes(normalizedQuery);
+                const matchesOtherLang = titleEn.includes(normalizedQuery) || descEn.includes(normalizedQuery) ||
+                                        titleIt.includes(normalizedQuery) || descIt.includes(normalizedQuery);
+                const matchesToolId = toolId.includes(normalizedQuery);
+                
+                if (normalizedQuery === '' || matchesCurrentLang || matchesOtherLang || matchesToolId) {
                     card.classList.remove('hidden');
                     sectionVisible++;
                     totalVisible++;
@@ -140,7 +193,12 @@ class NoTracePDFApp {
         // Update results count
         if (this.searchResultsCount) {
             if (normalizedQuery.length > 0) {
-                this.searchResultsCount.textContent = `Found ${totalVisible} tool${totalVisible !== 1 ? 's' : ''}`;
+                if (window.i18n) {
+                    const key = totalVisible === 1 ? 'foundTools' : 'foundTools_plural';
+                    this.searchResultsCount.textContent = window.i18n.t(key, { count: totalVisible });
+                } else {
+                    this.searchResultsCount.textContent = `Found ${totalVisible} tool${totalVisible !== 1 ? 's' : ''}`;
+                }
                 this.searchResultsCount.classList.remove('hidden');
             } else {
                 this.searchResultsCount.classList.add('hidden');
