@@ -3,7 +3,8 @@
 
 const translations = {
     it: {
-        tagline: "I tuoi file non lasciano mai il tuo dispositivo",
+        tagline: "I tuoi file non lasciano mai il tuo dispositivo.",
+        githubRepo: "Il codice è liberamente accessibile su",
         chooseTool: "Scegli uno Strumento",
         searchPlaceholder: "Cerca strumenti...",
         foundTools: "Trovato {count} strumento",
@@ -81,7 +82,8 @@ const translations = {
         error: "Si è verificato un errore"
     },
     en: {
-        tagline: "Your files never leave your device",
+        tagline: "Your files never leave your device.",
+        githubRepo: "The code is freely accessible on",
         chooseTool: "Choose a Tool",
         searchPlaceholder: "Search tools...",
         foundTools: "Found {count} tool",
@@ -270,6 +272,10 @@ class I18n {
         // Update tagline
         const tagline = document.querySelector('.tagline');
         if (tagline) tagline.textContent = this.t('tagline');
+        
+        // Update github repo link
+        const githubRepo = document.querySelector('.github-link span[data-i18n]');
+        if (githubRepo) githubRepo.textContent = this.t('githubRepo');
         
         // Update section titles
         document.querySelectorAll('.tool-section-title').forEach(el => {

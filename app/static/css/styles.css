@@ -101,24 +101,17 @@ body {
 
 /* GitHub Link */
 .github-link {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
+    gap: 4px;
     color: var(--text-secondary);
-    border-radius: var(--radius);
+    font-size: 14px;
+    text-decoration: none;
     transition: var(--transition);
 }
 
 .github-link:hover {
     color: var(--text);
-    background: var(--bg-secondary);
-}
-
-.github-link svg {
-    width: 22px;
-    height: 22px;
 }
 
 /* Language Toggle */
