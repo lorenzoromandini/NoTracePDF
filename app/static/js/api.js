@@ -26,7 +26,7 @@ class APIClient {
             };
 
             // Handle response
-            xhr.onload = () => {
+            xhr.onload = async () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     const contentType = xhr.getResponseHeader('Content-Type');
                     
@@ -48,7 +48,8 @@ class APIClient {
                     } else if (contentType && contentType.includes('application/json')) {
                         // JSON response (e.g., text extraction)
                         try {
-                            const data = JSON.parse(xhr.responseText);
+                            const text = await xhr.response.text();
+                            const data = JSON.parse(text);
                             resolve({
                                 success: true,
                                 type: 'json',
@@ -72,7 +73,8 @@ class APIClient {
                 } else {
                     // Error response
                     try {
-                        const error = JSON.parse(xhr.responseText);
+                        const text = await xhr.response.text();
+                        const error = JSON.parse(text);
                         reject(new Error(error.detail || `Server error: ${xhr.status}`));
                     } catch (e) {
                         reject(new Error(`Server error: ${xhr.status}`));
