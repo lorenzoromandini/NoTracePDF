@@ -6,7 +6,8 @@ FROM python:3.12-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    HOME=/tmp
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
@@ -22,11 +23,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice-writer \
     libreoffice-calc \
     libreoffice-impress \
+    libreoffice-core \
+    libreoffice-common \
+    python3-distutils \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
 RUN addgroup --system appgroup && \
-    adduser --system --group appuser
+    adduser --system --group --home /tmp appuser
 
 WORKDIR /app
 
@@ -36,8 +40,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app/ ./app/
 
-RUN mkdir -p /app/uploads && \
-    chown -R appuser:appgroup /app
+RUN mkdir -p /app/uploads /tmp/libreoffice && \
+    chown -R appuser:appgroup /app /tmp/libreoffice && \
+    chmod 777 /tmp/libreoffice
 
 USER appuser
 

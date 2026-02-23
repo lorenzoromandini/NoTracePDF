@@ -314,15 +314,15 @@ async def api_delete_pages(
 @router.post("/compress")
 async def api_compress_pdf(
     file: UploadFile = File(..., description="PDF file"),
-    quality: str = Form("medium", description="Quality preset: low, medium, or high")
+    quality: str = Form("medium", description="Compression level: high (max compression), medium, or low (preserve quality)")
 ):
     """
-    Compress PDF with quality presets.
+    Compress PDF with compression level presets.
     
-    quality:
-    - low: 72 DPI, aggressive compression (smallest file)
-    - medium: 150 DPI, balanced compression
-    - high: 300 DPI, minimal compression (best quality)
+    quality (compression level):
+    - high: Maximum compression, lower quality output, smallest file (72 DPI, 60% JPEG quality)
+    - medium: Balanced compression (150 DPI, 75% JPEG quality)
+    - low: Minimal compression, higher quality output, larger file (300 DPI, 90% JPEG quality, no downsample)
     """
     try:
         pdf_bytes = await validate_pdf(file)

@@ -116,13 +116,13 @@ const TOOL_CONFIG = {
         options: [
             {
                 key: 'quality',
-                label: 'Quality preset',
+                label: 'Compression level',
                 type: 'radio',
                 default: 'medium',
                 options: [
-                    { value: 'low', label: 'Low (smallest file, 72 DPI)' },
-                    { value: 'medium', label: 'Medium (balanced, 150 DPI)' },
-                    { value: 'high', label: 'High (best quality, 300 DPI)' }
+                    { value: 'high', label: 'High (max compression, lower quality, smallest file)' },
+                    { value: 'medium', label: 'Medium (balanced compression & quality)' },
+                    { value: 'low', label: 'Low (min compression, preserve quality, larger file)' }
                 ]
             }
         ]

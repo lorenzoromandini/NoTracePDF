@@ -33,10 +33,17 @@ class PageSelection(str, Enum):
 
 
 class QualityPreset(str, Enum):
-    """Compression quality presets."""
-    LOW = "low"      # 72 DPI, aggressive compression
-    MEDIUM = "medium"  # 150 DPI, balanced
-    HIGH = "high"    # 300 DPI, minimal compression
+    """
+    Compression level presets.
+    
+    Note: These indicate compression LEVEL, not output quality.
+    - HIGH = maximum compression, lower quality, smallest file
+    - MEDIUM = balanced compression
+    - LOW = minimal compression, higher quality, larger file
+    """
+    HIGH = "high"      # Maximum compression (72 DPI, 60% quality)
+    MEDIUM = "medium"  # Balanced compression (150 DPI, 75% quality)  
+    LOW = "low"        # Minimal compression (300 DPI, 90% quality)
 
 
 class ImageFormat(str, Enum):

@@ -2,7 +2,7 @@
 Image Conversion Service.
 
 Provides PDF-to-image and image-to-PDF conversion
-using pdf2image and Pillow with in-memory processing.
+using PyMuPDF for robust, simple implementation.
 
 Reference: IMG-01 to IMG-06
 """
@@ -10,10 +10,8 @@ from io import BytesIO
 from typing import List, Tuple, Union, Optional
 import math
 
-from pdf2image import convert_from_bytes
+import fitz  # PyMuPDF
 from PIL import Image
-import pikepdf
-from pikepdf import Name, Rectangle
 
 from app.schemas.pdf import PageSelection, PageSize
 from app.schemas.image import PdfToImageRequest, ImageToPdfRequest
@@ -32,7 +30,7 @@ def pdf_to_images(
     request: PdfToImageRequest
 ) -> List[Tuple[str, BytesIO]]:
     """
-    Convert PDF pages to images.
+    Convert PDF pages to images using PyMuPDF.
     
     Args:
         file: PDF BytesIO object
@@ -42,61 +40,57 @@ def pdf_to_images(
         List of (filename, BytesIO) tuples
     """
     file.seek(0)
-    pdf_bytes = file.read()
+    pdf = fitz.open(stream=file.read(), filetype="pdf")
     
-    # Convert PDF to images
-    images = convert_from_bytes(
-        pdf_bytes,
-        dpi=request.dpi,
-        thread_count=2,  # Use multiple threads for speed
-    )
-    
-    total_pages = len(images)
-    
-    # Determine which pages to convert
-    if request.pages == PageSelection.ALL:
-        page_indices = list(range(total_pages))
-    elif request.pages == PageSelection.FIRST:
-        page_indices = [0]
-    elif request.pages == PageSelection.LAST:
-        page_indices = [total_pages - 1]
-    else:
-        # List of page numbers
-        validate_page_numbers(request.pages, total_pages)
-        page_indices = [p - 1 for p in request.pages]
-    
-    results = []
-    
-    for idx in page_indices:
-        img = images[idx]
-        output = BytesIO()
+    try:
+        total_pages = len(pdf)
         
-        # Save in requested format
-        format_settings = _get_format_settings(request.format.value, request.quality)
-        img.save(output, **format_settings)
-        output.seek(0)
+        # Determine which pages to convert
+        if request.pages == PageSelection.ALL:
+            page_indices = list(range(total_pages))
+        elif request.pages == PageSelection.FIRST:
+            page_indices = [0]
+        elif request.pages == PageSelection.LAST:
+            page_indices = [total_pages - 1]
+        else:
+            validate_page_numbers(request.pages, total_pages)
+            page_indices = [p - 1 for p in request.pages]
         
-        # Generate filename
-        ext = request.format.value.lower()
-        if ext == 'jpg':
-            ext = 'jpg'
-        filename = f"page_{idx + 1:03d}.{ext}"
+        results = []
         
-        results.append((filename, output))
-    
-    return results
-
-
-def _get_format_settings(format: str, quality: int) -> dict:
-    """Get PIL save settings for format."""
-    if format == 'png':
-        return {'format': 'PNG'}
-    elif format in ('jpg', 'jpeg'):
-        return {'format': 'JPEG', 'quality': quality}
-    elif format == 'webp':
-        return {'format': 'WEBP', 'quality': quality}
-    else:
-        return {'format': 'PNG'}
+        for idx in page_indices:
+            page = pdf[idx]
+            
+            # Render page to pixmap
+            mat = fitz.Matrix(request.dpi/72, request.dpi/72)  # Scale by DPI
+            pix = page.get_pixmap(matrix=mat)
+            
+            # Convert to PIL Image
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            
+            # Save to BytesIO
+            output = BytesIO()
+            if request.format.value == 'png':
+                img.save(output, format='PNG')
+                ext = 'png'
+            elif request.format.value == 'jpg' or request.format.value == 'jpeg':
+                img.save(output, format='JPEG', quality=request.quality)
+                ext = 'jpg'
+            elif request.format.value == 'webp':
+                img.save(output, format='WEBP', quality=request.quality)
+                ext = 'webp'
+            else:
+                img.save(output, format='PNG')
+                ext = 'png'
+            
+            output.seek(0)
+            filename = f"page_{idx + 1:03d}.{ext}"
+            results.append((filename, output))
+        
+        return results
+        
+    finally:
+        pdf.close()
 
 
 def images_to_pdf(
@@ -104,7 +98,7 @@ def images_to_pdf(
     request: ImageToPdfRequest
 ) -> BytesIO:
     """
-    Convert multiple images to a single PDF.
+    Convert multiple images to a single PDF using PyMuPDF.
     
     Args:
         files: List of (BytesIO, format) tuples for each image
@@ -115,132 +109,46 @@ def images_to_pdf(
     """
     output = BytesIO()
     
-    # Load all images
-    images = []
-    for img_bytes, img_format in files:
-        img_bytes.seek(0)
-        img = Image.open(img_bytes)
-        
-        # Convert to RGB if necessary for PDF
-        if img.mode not in ('RGB', 'L'):
-            if img.mode == 'RGBA':
-                # Handle transparency by compositing on white background
-                background = Image.new('RGB', img.size, (255, 255, 255))
-                background.paste(img, mask=img.split()[-1])
-                img = background
-            elif img.mode == 'P':
-                img = img.convert('RGB')
-            else:
-                img = img.convert('RGB')
-        
-        images.append(img)
+    # Create new PDF
+    pdf = fitz.open()
     
-    if not images:
-        raise ValueError("No valid images provided")
-    
-    # Determine page sizes based on request
-    if request.page_size == PageSize.FIT:
-        # Size each page to fit its image
-        page_sizes = [_calculate_fit_page_size(img.size, request.margin) for img in images]
-    elif request.page_size == PageSize.ORIGINAL:
-        # Each page sized to its image (in points)
-        page_sizes = [_points_from_pixels(img.size) for img in images]
-    else:
-        # Fixed page size (A4 or Letter)
-        page_sizes = [PAGE_DIMENSIONS[request.page_size]] * len(images)
-    
-    # Create PDF using pikepdf
-    with pikepdf.Pdf.new() as pdf:
-        for idx, (img, page_size) in enumerate(zip(images, page_sizes)):
-            page = _create_page_with_image(pdf, img, page_size, request)
-            pdf.pages.append(page)
-        
-        pdf.save(output)
-    
-    output.seek(0)
-    return output
-
-
-def _calculate_fit_page_size(img_size: Tuple[int, int], margin: int) -> Tuple[float, float]:
-    """
-    Calculate page size to fit image with margin.
-    
-    Args:
-        img_size: Image size in pixels (width, height)
-        margin: Margin in pixels
-        
-    Returns:
-        Tuple[float, float]: Page size in points
-    """
-    # Convert pixels to points (assuming 72 DPI for display)
-    # Add margins
-    width_pt = (img_size[0] + 2 * margin) * 72 / 72  # Assuming 72 DPI
-    height_pt = (img_size[1] + 2 * margin) * 72 / 72
-    
-    return (width_pt, height_pt)
-
-
-def _points_from_pixels(pixel_size: Tuple[int, int], dpi: int = 72) -> Tuple[float, float]:
-    """
-    Convert pixel dimensions to points.
-    
-    Args:
-        pixel_size: Size in pixels (width, height)
-        dpi: Dots per inch (default 72)
-        
-    Returns:
-        Tuple[float, float]: Size in points
-    """
-    width_pt = pixel_size[0] * 72 / dpi
-    height_pt = pixel_size[1] * 72 / dpi
-    return (width_pt, height_pt)
-
-
-def _create_page_with_image(
-    pdf: pikepdf.Pdf,
-    img: Image.Image,
-    page_size: Tuple[float, float],
-    request: ImageToPdfRequest
-) -> pikepdf.Page:
-    """
-    Create a PDF page with the image embedded.
-    
-    This uses a simple approach: convert image to PDF-compatible format
-    and embed it in the page.
-    """
-    page_width, page_height = page_size
-    
-    # Create a new page
-    page = pdf.make_page(Rectangle(0, 0, page_width, page_height))
-    
-    # Convert image to bytes
-    img_bytes = BytesIO()
-    img.save(img_bytes, format='JPEG', quality=95)
-    img_bytes.seek(0)
-    
-    # Create image XObject
-    # This is a simplified approach - production code would handle
-    # colorspaces, compression, etc. properly
-    
-    # For simplicity, use Pillow to create a temp PDF and copy the page
-    temp_pdf_bytes = BytesIO()
-    img.save(temp_pdf_bytes, format='PDF')
-    temp_pdf_bytes.seek(0)
-    
-    with pikepdf.Pdf.open(temp_pdf_bytes) as temp_pdf:
-        if len(temp_pdf.pages) > 0:
-            temp_page = temp_pdf.pages[0]
+    try:
+        for img_bytes, img_format in files:
+            img_bytes.seek(0)
+            img = Image.open(img_bytes)
             
-            # Calculate scaling and position
+            # Convert to RGB/RGBA for PDF compatibility
+            if img.mode == 'P':
+                img = img.convert('RGBA' if 'transparency' in img.info else 'RGB')
+            elif img.mode not in ('RGB', 'RGBA'):
+                img = img.convert('RGB')
+            
+            # Get image dimensions
             img_width, img_height = img.size
             img_aspect = img_width / img_height
             
+            # Determine page size
+            if request.page_size == PageSize.FIT or request.page_size == PageSize.ORIGINAL:
+                # Size page to fit image
+                if img_width > img_height:
+                    page_width = 595.28  # A4 width
+                    page_height = page_width / img_aspect
+                else:
+                    page_height = 841.89  # A4 height
+                    page_width = page_height * img_aspect
+            else:
+                page_width, page_height = PAGE_DIMENSIONS[request.page_size]
+            
+            # Create new page
+            page = pdf.new_page(width=page_width, height=page_height)
+            
+            # Calculate position and size
             if request.fit_to_page:
-                # Scale to fit page with margin
-                available_width = page_width - 2 * request.margin
-                available_height = page_height - 2 * request.margin
+                # Calculate scale to fit with margins
+                margin = 36  # 0.5 inch margin
+                available_width = page_width - 2 * margin
+                available_height = page_height - 2 * margin
                 
-                # Determine scale factor
                 scale_w = available_width / img_width if img_width > 0 else 1
                 scale_h = available_height / img_height if img_height > 0 else 1
                 scale = min(scale_w, scale_h, 1.0)  # Don't upscale
@@ -258,11 +166,29 @@ def _create_page_with_image(
                 final_width = img_width
                 final_height = img_height
             
-            # Copy content from temp page
-            # This is a simplified implementation
-            # A production version would properly create XObjects and content streams
+            # Insert image
+            rect = fitz.Rect(x, y, x + final_width, y + final_height)
             
-    return page
+            # Convert PIL image to bytes
+            img_byte_arr = BytesIO()
+            if img.mode == 'RGBA':
+                # For transparency, use PNG
+                img.save(img_byte_arr, format='PNG')
+            else:
+                # For JPEG, use quality 95
+                img.save(img_byte_arr, format='JPEG', quality=95)
+            img_byte_arr.seek(0)
+            
+            # Insert into PDF
+            page.insert_image(rect, stream=img_byte_arr.read())
+        
+        # Save PDF with compression
+        pdf.save(output, garbage=4, deflate=True)
+        output.seek(0)
+        return output
+        
+    finally:
+        pdf.close()
 
 
 def image_to_pdf_simple(
@@ -271,9 +197,9 @@ def image_to_pdf_simple(
     fit_to_page: bool = True
 ) -> BytesIO:
     """
-    Simplified image to PDF conversion using Pillow.
+    Simplified image to PDF conversion using PyMuPDF.
     
-    This is a fallback method that uses Pillow's built-in PDF saving.
+    This is a wrapper around images_to_pdf for API compatibility.
     
     Args:
         files: List of (BytesIO, format) tuples
@@ -283,40 +209,10 @@ def image_to_pdf_simple(
     Returns:
         BytesIO: Combined PDF
     """
-    images = []
+    from app.schemas.image import ImageToPdfRequest
     
-    for img_bytes, _ in files:
-        img_bytes.seek(0)
-        img = Image.open(img_bytes)
-        
-        # Convert to RGB if needed
-        if img.mode not in ('RGB', 'L'):
-            if img.mode == 'RGBA':
-                background = Image.new('RGB', img.size, (255, 255, 255))
-                background.paste(img, mask=img.split()[-1])
-                img = background
-            else:
-                img = img.convert('RGB')
-        
-        images.append(img)
-    
-    if not images:
-        raise ValueError("No valid images provided")
-    
-    # Use first image as base and append others
-    output = BytesIO()
-    first_img = images[0]
-    
-    if len(images) == 1:
-        first_img.save(output, format='PDF')
-    else:
-        # Save first image and append rest
-        first_img.save(
-            output,
-            format='PDF',
-            save_all=True,
-            append_images=images[1:]
-        )
-    
-    output.seek(0)
-    return output
+    request = ImageToPdfRequest(
+        page_size=page_size,
+        fit_to_page=fit_to_page
+    )
+    return images_to_pdf(files, request)

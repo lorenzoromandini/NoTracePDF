@@ -15,7 +15,6 @@ from fastapi.responses import StreamingResponse
 from app.services.conversion_service import (
     office_to_pdf,
     pdf_to_office,
-    validate_office_file,
 )
 from app.services.web_conversion_service import (
     html_to_pdf,

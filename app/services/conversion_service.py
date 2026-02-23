@@ -2,7 +2,7 @@
 Office format conversion service.
 
 Provides bidirectional conversions between PDF and Microsoft Office formats
-(Word, Excel, PowerPoint) using LibreOffice headless mode.
+using pdf2docx for PDF to Word and LibreOffice for other conversions.
 
 All conversions maintain zero-trace in-memory processing with temporary
 files created only in tmpfs-mounted /tmp.
@@ -19,9 +19,15 @@ from pathlib import Path
 
 from app.schemas.convert import OfficeFormat
 
+# PDF2DOCX for PDF to Word conversion
+try:
+    from pdf2docx import Converter
+    PDF2DOCX_AVAILABLE = True
+except ImportError:
+    PDF2DOCX_AVAILABLE = False
 
 # LibreOffice conversion timeout (seconds)
-LIBREOFFICE_TIMEOUT = 60
+LIBREOFFICE_TIMEOUT = 120
 
 
 def office_to_pdf(file: BytesIO, input_format: str) -> BytesIO:
@@ -42,9 +48,18 @@ def office_to_pdf(file: BytesIO, input_format: str) -> BytesIO:
     file.seek(0)
     
     # Determine file extension
-    ext = f".{input_format}"
+    ext_map = {
+        'docx': '.docx',
+        'xlsx': '.xlsx',
+        'pptx': '.pptx',
+    }
     
-    # Create temp file for input on tmpfs
+    if input_format not in ext_map:
+        raise ValueError(f"Unsupported input format: {input_format}")
+    
+    ext = ext_map[input_format]
+    
+    # Create temp file for input
     with tempfile.NamedTemporaryFile(
         suffix=ext,
         dir='/tmp',
@@ -55,56 +70,55 @@ def office_to_pdf(file: BytesIO, input_format: str) -> BytesIO:
     
     try:
         # Run LibreOffice headless conversion
+        env = os.environ.copy()
+        env['SAL_DISABLE_CONNECT_WITH_OFFICE'] = '1'
+        env['SAL_NO_FORK'] = '1'
+        
         result = subprocess.run([
             'libreoffice',
             '--headless',
-            '--nofilter',
             '--accept=none',
             '--convert-to', 'pdf',
             '--outdir', '/tmp',
+            f'-env:UserInstallation=file:///tmp/lo-office-{os.getpid()}',
             tmp_in_path
-        ], timeout=LIBREOFFICE_TIMEOUT, capture_output=True, text=True)
+        ], timeout=LIBREOFFICE_TIMEOUT, capture_output=True, text=True, cwd='/tmp', env=env)
         
         if result.returncode != 0:
             raise RuntimeError(
                 f"LibreOffice conversion failed: {result.stderr or result.stdout}"
             )
         
-        # Determine output path
-        pdf_path = tmp_in_path.rsplit('.', 1)[0] + '.pdf'
+        # Get output path
+        tmp_out_path = tmp_in_path.replace(ext, '.pdf')
         
-        # Read output PDF
-        if not os.path.exists(pdf_path):
+        if not os.path.exists(tmp_out_path):
             raise RuntimeError(
-                f"LibreOffice did not create expected output file. "
-                f"stdout: {result.stdout}, stderr: {result.stderr}"
+                f"LibreOffice did not create expected output file. stdout: {result.stdout}, stderr: {result.stderr}"
             )
         
-        with open(pdf_path, 'rb') as f:
-            pdf_bytes = BytesIO(f.read())
+        # Read output file
+        output = BytesIO()
+        with open(tmp_out_path, 'rb') as f:
+            output.write(f.read())
+        output.seek(0)
         
-        # Cleanup output file
-        os.remove(pdf_path)
+        return output
         
-        pdf_bytes.seek(0)
-        return pdf_bytes
-        
-    except subprocess.TimeoutExpired:
-        raise TimeoutError(
-            f"LibreOffice conversion timed out after {LIBREOFFICE_TIMEOUT} seconds"
-        )
     finally:
-        # Always cleanup input temp file
+        # Cleanup temp files
         if os.path.exists(tmp_in_path):
-            os.remove(tmp_in_path)
+            os.unlink(tmp_in_path)
+        tmp_out_path = tmp_in_path.replace(ext, '.pdf')
+        if os.path.exists(tmp_out_path):
+            os.unlink(tmp_out_path)
 
 
 def pdf_to_office(file: BytesIO, output_format: str) -> BytesIO:
     """
-    Convert PDF to Office document using LibreOffice headless.
+    Convert PDF to Office document.
     
-    Note: LibreOffice converts PDF to ODF formats (odt, ods, odp) first,
-    then we convert to the target Office format if needed.
+    Uses pdf2docx for Word documents (docx) and LibreOffice for other formats.
     
     Args:
         file: PDF file as BytesIO
@@ -114,22 +128,81 @@ def pdf_to_office(file: BytesIO, output_format: str) -> BytesIO:
         BytesIO: Office document
         
     Raises:
-        RuntimeError: If LibreOffice conversion fails
+        RuntimeError: If conversion fails
         TimeoutError: If conversion times out
     """
     file.seek(0)
     
-    # Map output format to LibreOffice filter
+    if output_format == 'docx':
+        return _pdf_to_docx(file)
+    else:
+        return _pdf_to_office_libreoffice(file, output_format)
+
+
+def _pdf_to_docx(file: BytesIO) -> BytesIO:
+    """
+    Convert PDF to Word using pdf2docx library.
+    
+    Args:
+        file: PDF file as BytesIO
+        
+    Returns:
+        BytesIO: Word document
+    """
+    if not PDF2DOCX_AVAILABLE:
+        raise RuntimeError("pdf2docx library not available")
+    
+    # Create temp files
+    with tempfile.NamedTemporaryFile(suffix='.pdf', dir='/tmp', delete=False) as tmp_in:
+        tmp_in.write(file.read())
+        tmp_in_path = tmp_in.name
+    
+    tmp_out_path = tmp_in_path.replace('.pdf', '.docx')
+    
+    try:
+        # Convert using pdf2docx
+        cv = Converter(tmp_in_path)
+        cv.convert(tmp_out_path, start=0, end=None)
+        cv.close()
+        
+        # Read output file
+        output = BytesIO()
+        with open(tmp_out_path, 'rb') as f:
+            output.write(f.read())
+        output.seek(0)
+        
+        return output
+        
+    finally:
+        # Cleanup temp files
+        if os.path.exists(tmp_in_path):
+            os.unlink(tmp_in_path)
+        if os.path.exists(tmp_out_path):
+            os.unlink(tmp_out_path)
+
+
+def _pdf_to_office_libreoffice(file: BytesIO, output_format: str) -> BytesIO:
+    """
+    Convert PDF to Office using LibreOffice (fallback for xlsx, pptx).
+    
+    Args:
+        file: PDF file as BytesIO
+        output_format: Output format (xlsx, pptx)
+        
+    Returns:
+        BytesIO: Office document
+    """
+    file.seek(0)
+    
     format_map = {
-        'docx': ('docx', 'Office Open XML Text'),
-        'xlsx': ('xlsx', 'Office Open XML Spreadsheet'),
-        'pptx': ('pptx', 'Office Open XML Presentation'),
+        'xlsx': ('xlsx', 'Calc MS Excel 2007 XML'),
+        'pptx': ('pptx', 'Impress MS PowerPoint 2007 XML'),
     }
     
     if output_format not in format_map:
         raise ValueError(f"Unsupported output format: {output_format}")
     
-    ext, _ = format_map[output_format]
+    ext, filter_name = format_map[output_format]
     
     # Create temp file for input PDF
     with tempfile.NamedTemporaryFile(
@@ -142,67 +215,45 @@ def pdf_to_office(file: BytesIO, output_format: str) -> BytesIO:
     
     try:
         # Run LibreOffice headless conversion
+        env = os.environ.copy()
+        env['SAL_DISABLE_CONNECT_WITH_OFFICE'] = '1'
+        env['SAL_NO_FORK'] = '1'
+        
         result = subprocess.run([
             'libreoffice',
             '--headless',
-            '--nofilter',
             '--accept=none',
-            '--convert-to', ext,
+            '--convert-to', f'{ext}:{filter_name}',
             '--outdir', '/tmp',
+            f'-env:UserInstallation=file:///tmp/lo-pdf-{os.getpid()}',
             tmp_in_path
-        ], timeout=LIBREOFFICE_TIMEOUT, capture_output=True, text=True)
+        ], timeout=LIBREOFFICE_TIMEOUT, capture_output=True, text=True, cwd='/tmp', env=env)
         
         if result.returncode != 0:
             raise RuntimeError(
                 f"LibreOffice conversion failed: {result.stderr or result.stdout}"
             )
         
-        # Determine output path
-        output_path = tmp_in_path.rsplit('.', 1)[0] + f'.{ext}'
+        # Get output path
+        tmp_out_path = tmp_in_path.replace('.pdf', f'.{ext}')
         
-        # Read output file
-        if not os.path.exists(output_path):
+        if not os.path.exists(tmp_out_path):
             raise RuntimeError(
-                f"LibreOffice did not create expected output file. "
-                f"stdout: {result.stdout}, stderr: {result.stderr}"
+                f"LibreOffice did not create expected output file. stdout: {result.stdout}, stderr: {result.stderr}"
             )
         
-        with open(output_path, 'rb') as f:
-            output_bytes = BytesIO(f.read())
+        # Read output file
+        output = BytesIO()
+        with open(tmp_out_path, 'rb') as f:
+            output.write(f.read())
+        output.seek(0)
         
-        # Cleanup output file
-        os.remove(output_path)
+        return output
         
-        output_bytes.seek(0)
-        return output_bytes
-        
-    except subprocess.TimeoutExpired:
-        raise TimeoutError(
-            f"LibreOffice conversion timed out after {LIBREOFFICE_TIMEOUT} seconds"
-        )
     finally:
-        # Always cleanup input temp file
+        # Cleanup temp files
         if os.path.exists(tmp_in_path):
-            os.remove(tmp_in_path)
-
-
-def validate_office_file(content: bytes, expected_format: str) -> bool:
-    """
-    Validate Office file format using magic bytes.
-    
-    Office files (docx, xlsx, pptx) are ZIP archives with specific structures.
-    
-    Args:
-        content: Raw file bytes
-        expected_format: Expected format (docx, xlsx, pptx)
-        
-    Returns:
-        bool: True if valid
-    """
-    # Office files start with ZIP signature
-    if not content.startswith(b'PK\x03\x04') and not content.startswith(b'PK\x05\x06'):
-        return False
-    
-    # Additional validation could check for specific content types
-    # For now, ZIP signature check is sufficient
-    return True
+            os.unlink(tmp_in_path)
+        tmp_out_path = tmp_in_path.replace('.pdf', f'.{ext}')
+        if os.path.exists(tmp_out_path):
+            os.unlink(tmp_out_path)

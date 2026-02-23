@@ -102,9 +102,6 @@ def text_to_pdf(
                 )
                 y_position = margin
             
-            # Get font metrics for width calculation
-            font_metrics = current_page.get_fontmetrics(font_family, font_size)
-            
             # Calculate how many characters fit
             char_width = font_size * 0.5  # Approximate
             max_chars = int(text_width / char_width)
