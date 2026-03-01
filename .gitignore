@@ -31,5 +31,11 @@ venv/
 .DS_Store
 Thumbs.db
 
+# Opencode
+.planning/
+.opencode/
+*.todo
+VERIFICATION.md
+
 # Docker
 *.log
